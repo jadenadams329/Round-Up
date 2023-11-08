@@ -740,7 +740,7 @@ Edit a new venue specified by its id
   the group with a status of "co-host"
 * Request
   * Method: PUT
-  * URL: /groups/:groupId/venues/:venueId
+  * URL: /venues/:venueId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1372,7 +1372,7 @@ Request a new membership for a group specified by id.
 * Require Authentication: true
 * Request
   * Method: POST
-  * URL: /groups/:groupId/memberships
+  * URL: /groups/:groupId/request-membership
   * Headers:
     * Content-Type: application/json
   * Body: none
@@ -1694,7 +1694,7 @@ Request attendance for an event specified by id.
 * Require Authorization: Current User must be a member of the group
 * Request
   * Method: POST
-  * URL: /events/:eventId/attendees
+  * URL: /events/:eventId/request-attendance
   * Headers:
     * Content-Type: application/json
   * Body: none
@@ -1757,8 +1757,8 @@ Change the status of an attendance for an event specified by id.
 * Require proper authorization: Current User must already be the organizer or
   have a membership to the group with the status of "co-host"
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: PUT
+  * URL: /events/:eventId/attendances/:userId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1829,8 +1829,8 @@ Delete an attendance to an event specified by id.
 * Require proper authorization: Current User must be the host of the group, or
   the user whose attendance is being deleted
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: DELETE
+  * URL: /events/:eventId/attendances/:userId
   * Headers:
     * Content-Type: application/json
   * Body:
