@@ -91,7 +91,7 @@ information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * URL: /users
+  * URL: /session
   * Headers:
     * Content-Type: application/json
   * Body:
