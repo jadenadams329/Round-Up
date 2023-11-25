@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Group_Images',
+    modelName: 'Group_Image',
   });
   return Group_Image;
 };

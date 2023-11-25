@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Event_Images',
+    modelName: 'Event_Image',
   });
   return Event_Image;
 };
