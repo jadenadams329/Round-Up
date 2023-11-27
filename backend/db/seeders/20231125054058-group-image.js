@@ -13,17 +13,17 @@ module.exports = {
       [
         {
           groupId: 1,
-          url: null,
+          url: 'image1',
           preview: true
         },
         {
           groupId: 2,
-          url: null,
+          url: 'image2',
           preview: false
         },
         {
           groupId: 3,
-          url: null,
+          url: 'image3',
           preview: true
         }
       ], { validate: true }
