@@ -192,6 +192,14 @@ module.exports = (sequelize, DataTypes) => {
 						],
 					};
 				},
+				isGroupOrganizer(groupId, userId) {
+					return {
+						where: {
+							id: groupId,
+							organizerId: userId
+						}
+					}
+				}
 			},
 		}
 	);
