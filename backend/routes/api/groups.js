@@ -55,44 +55,49 @@ router.get("/:groupId/venues", requireAuth, async (req, res, next) => {
 });
 
 //Create a new Venue for a Group specified by its id
-router.post("/:groupId/venues", requireAuth, validateVenue, async (req, res, next) => {
-	try {
-		const { user } = req;
-		const groupId = req.params.groupId;
-		const { address, city, state, lat, lng } = req.body;
+router.post(
+	"/:groupId/venues",
+	requireAuth,
+	validateVenue,
+	async (req, res, next) => {
+		try {
+			const { user } = req;
+			const groupId = req.params.groupId;
+			const { address, city, state, lat, lng } = req.body;
 
-		//check to see if group exists
-		const checkGroup = await Group.findByPk(groupId);
-		if (!checkGroup) {
-			const err = new Error("Group couldn't be found");
-			err.status = 404;
-			return next(err);
+			//check to see if group exists
+			const checkGroup = await Group.findByPk(groupId);
+			if (!checkGroup) {
+				const err = new Error("Group couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if user is group organizer or cohost
+			const roles = await User.scope({
+				method: ["isOrganizerOrCoHost", user.id, groupId],
+			}).findOne();
+			if (roles.Groups.length === 0 && roles.Memberships.length === 0) {
+				const err = new Error("Forbidden");
+				err.status = 403;
+				return next(err);
+			}
+
+			const newVenue = await Venue.create({
+				groupId: groupId,
+				address,
+				city,
+				state,
+				lat,
+				lng,
+			});
+
+			return res.json(newVenue);
+		} catch (err) {
+			next(err);
 		}
-
-		//check to see if user is group organizer or cohost
-		const roles = await User.scope({
-			method: ["isOrganizerOrCoHost", user.id, groupId],
-		}).findOne();
-		if (roles.Groups.length === 0 && roles.Memberships.length === 0) {
-			const err = new Error("Forbidden");
-			err.status = 403;
-			return next(err);
-		}
-
-		const newVenue = await Venue.create({
-			groupId: groupId,
-			address,
-			city,
-			state,
-			lat,
-			lng,
-		});
-
-		return res.json(newVenue);
-	} catch (err) {
-		next(err);
 	}
-});
+);
 
 //Add an Image to a Group based on the Group's id
 router.post("/:groupId/images", requireAuth, async (req, res, next) => {

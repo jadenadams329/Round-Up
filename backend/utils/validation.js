@@ -109,5 +109,5 @@ module.exports = {
 	validateGroupBody,
 	validateSignup,
 	validateLogin,
-  validateVenue
+	validateVenue,
 };
