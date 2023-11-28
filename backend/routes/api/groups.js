@@ -71,6 +71,38 @@ router.get("/:groupId", async (req, res, next) => {
 	}
 });
 
+router.delete('/:groupId', requireAuth, async (req, res, next) => {
+	try {
+		const { user } = req;
+		const groupId = req.params.groupId;
+
+		//check to see if group exists
+		const checkGroup = await Group.findByPk(groupId);
+		if (!checkGroup) {
+			const err = new Error("Group couldn't be found");
+			err.status = 404;
+			return next(err);
+		}
+		//check to see if user is group organizer
+		const isAuthorized = await Group.scope({
+			method: ["isGroupOrganizer", groupId, user.id],
+		}).findOne();
+		if (!isAuthorized) {
+			const err = new Error("Forbidden");
+			err.status = 403;
+			return next(err);
+		}
+
+		await checkGroup.destroy();
+
+		return res.json({
+			message: "Successfully deleted"
+		})
+	} catch(err) {
+		next(err)
+	}
+})
+
 const validateGroupBody = [
 	check("name")
 		.isLength({ min: 1, max: 60 })
