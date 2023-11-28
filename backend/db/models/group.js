@@ -173,7 +173,6 @@ module.exports = (sequelize, DataTypes) => {
 								separate: true,
 							},
 						],
-						group: ["Group.id"],
 					};
 				},
 				currentUserJoinedGroups(userId) {
@@ -191,7 +190,6 @@ module.exports = (sequelize, DataTypes) => {
 								separate: true,
 							},
 						],
-						group: ["Group.id"],
 					};
 				},
 			},
