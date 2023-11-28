@@ -10,12 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-<<<<<<< HEAD
-      // define association here
-=======
       Attendance.belongsTo(models.Event, { foreignKey: "eventId" });
       Attendance.belongsTo(models.User, { foreignKey: "userId" });
->>>>>>> dev
     }
   }
   Attendance.init({
@@ -27,11 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-<<<<<<< HEAD
-    modelName: 'Attendances',
-=======
     modelName: 'Attendance',
->>>>>>> dev
   });
   return Attendance;
 };

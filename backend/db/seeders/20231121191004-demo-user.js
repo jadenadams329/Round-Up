@@ -10,32 +10,6 @@ if (process.env.NODE_ENV === "production") {
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-<<<<<<< HEAD
-  async up (queryInterface, Sequelize) {
-    await User.bulkCreate([
-      {
-        firstName: "Jaden",
-        lastName: "Adams",
-        email: "jadenadams329@gmail.com",
-        username: "jadenadams329",
-        hashedPassword: bcrypt.hashSync('password')
-      },
-      {
-        firstName: "Fake",
-        lastName: "User",
-        email: "user1@user.io",
-        username: "FakeUser1",
-        hashedPassword: bcrypt.hashSync('password1')
-      },
-      {
-        firstName: "Faker",
-        lastName: "Usered",
-        email: "user2@user.io",
-        username: "FakeUser2",
-        hashedPassword: bcrypt.hashSync('password3')
-      }
-    ], {validate: true})
-=======
   async up(queryInterface, Sequelize) {
     await User.bulkCreate(
       [
@@ -63,7 +37,6 @@ module.exports = {
       ],
       { validate: true }
     );
->>>>>>> dev
   },
 
   async down(queryInterface, Sequelize) {

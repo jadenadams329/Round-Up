@@ -2,22 +2,6 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
 	class Group extends Model {
-<<<<<<< HEAD
-		/**
-		 * Helper method for defining associations.
-		 * This method is not a part of Sequelize lifecycle.
-		 * The `models/index` file will call this method automatically.
-		 */
-		static associate(models) {
-			Group.belongsToMany(models.User, {
-				through: models.Membership,
-				foreignKey: "groupId",
-				otherKey: "userId",
-			});
-
-			Group.belongsTo(models.User, {
-				foreignKey: "organizerId",
-=======
 		static associate(models) {
 			Group.belongsTo(models.User, {
 				foreignKey: "organizerId",
@@ -26,22 +10,12 @@ module.exports = (sequelize, DataTypes) => {
 
 			Group.hasMany(models.Membership, {
 				foreignKey: "groupId",
->>>>>>> dev
 			});
 
 			Group.hasMany(models.Group_Image, {
 				foreignKey: "groupId",
 			});
 
-<<<<<<< HEAD
-			Group.belongsToMany(models.Venue, {
-				through: models.Event,
-				foreignKey: "groupId",
-				otherKey: "venueId",
-			});
-
-=======
->>>>>>> dev
 			Group.hasMany(models.Venue, {
 				foreignKey: "groupId",
 			});
@@ -50,8 +24,6 @@ module.exports = (sequelize, DataTypes) => {
 				foreignKey: "groupId",
 			});
 		}
-<<<<<<< HEAD
-=======
 
 		static async getAllGroups() {
 			const result = await Group.findAll({
@@ -159,7 +131,6 @@ module.exports = (sequelize, DataTypes) => {
 			});
 			return groups;
 		}
->>>>>>> dev
 	}
 	Group.init(
 		{
@@ -185,9 +156,6 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			sequelize,
-<<<<<<< HEAD
-			modelName: "Groups",
-=======
 			modelName: "Group",
 			scopes: {
 				currentUserCreatedGroups(userId) {
@@ -227,7 +195,6 @@ module.exports = (sequelize, DataTypes) => {
 					};
 				},
 			},
->>>>>>> dev
 		}
 	);
 	return Group;
