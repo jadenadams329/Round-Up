@@ -9,6 +9,8 @@ if (process.env.NODE_ENV === "production") {
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
+    options.tableName = 'Memberships'
+    options.validate = true
     await Membership.bulkCreate(
       [
         {
@@ -41,12 +43,11 @@ module.exports = {
           groupId: 3,
           status: "pending"
         }
-      ], { validate: true }
+      ], options
     )
   },
 
   async down (queryInterface, Sequelize) {
-    options.tableName = "Memberships";
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(
       options,
