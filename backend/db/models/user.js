@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
 		 * The `models/index` file will call this method automatically.
 		 */
 		static associate(models) {
-			User.hasMany(models.Group, { foreignKey: "organizerId", as: "Organizer" });
+			User.hasMany(models.Group, { foreignKey: "organizerId" });
 			User.hasMany(models.Membership, { foreignKey: "userId" });
 			User.hasMany(models.Attendance, { foreignKey: "userId" });
 		}
@@ -61,6 +61,32 @@ module.exports = (sequelize, DataTypes) => {
 					exclude: ["hashedPassword", "createdAt", "updatedAt"],
 				},
 			},
+			scopes: {
+				isOrganizerOrCoHost(userId, groupId) {
+					return {
+						where: { id: userId },
+						include: [
+							{
+							  model: sequelize.models.Group,
+							  where: {
+								id: groupId,
+								organizerId: userId,
+							  },
+							  required: false, 
+							},
+							{
+							  model: sequelize.models.Membership,
+							  where: {
+								userId: userId,
+								groupId: groupId,
+								status: 'co-host',
+							  },
+							  required: false,
+							},
+						  ],
+					}
+				}
+			}
 		}
 	);
 	return User;

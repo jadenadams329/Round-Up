@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			Group.belongsTo(models.User, {
 				foreignKey: "organizerId",
-				as: "Organizer"
+
 			});
 
 			Group.hasMany(models.Membership, {
@@ -82,7 +82,6 @@ module.exports = (sequelize, DataTypes) => {
 					{
 						model: sequelize.models.User,
 						attributes: ["id", "firstName", "lastName"],
-						as: "Organizer"
 					},
 					{
 						model: sequelize.models.Venue,
