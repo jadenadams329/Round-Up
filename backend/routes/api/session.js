@@ -60,7 +60,7 @@ router.post("/", validateLogin, async (req, res, next) => {
 
 
 // GET current user
-router.get("/", requireAuth, async (req, res) => {
+router.get("/", async (req, res) => {
 	const { user } = req;
 	if (user) {
 		const safeUser = {

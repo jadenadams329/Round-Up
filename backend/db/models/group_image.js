@@ -24,7 +24,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
+<<<<<<< HEAD
     modelName: 'Group_Images',
+=======
+    modelName: 'Group_Image',
+>>>>>>> dev
   });
   return Group_Image;
 };
