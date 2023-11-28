@@ -1,5 +1,4 @@
 const express = require("express");
-const { check } = require("express-validator");
 const { validateGroupBody, validateVenue } = require("../../utils/validation");
 const { Group, Group_Image, User, Venue } = require("../../db/models");
 
