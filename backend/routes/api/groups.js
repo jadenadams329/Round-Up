@@ -6,6 +6,17 @@ const { Group, Group_Image } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 const router = express.Router();
 
+//GET all Groups joined or organized by the Current User
+router.get("/current", requireAuth, async (req, res, next) => {
+	const { user } = req;
+	try {
+		const userGroups = await Group.getUserGroups(user.id);
+		return res.json({ Groups: userGroups });
+	} catch (err) {
+		next(err);
+	}
+});
+
 //Add an Image to a Group based on the Group's id
 router.post("/:groupId/images", requireAuth, async (req, res, next) => {
 	try {
@@ -60,28 +71,7 @@ router.get("/:groupId", async (req, res, next) => {
 	}
 });
 
-//GET all Groups joined or organized by the Current User
-router.get("/current", requireAuth, async (req, res, next) => {
-	const { user } = req;
-	try {
-		const userGroups = await Group.getUserGroups(user.id);
-		return res.json({ Groups: userGroups });
-	} catch (err) {
-		next(err);
-	}
-});
-
-//GET all Groups
-router.get("/", async (req, res, next) => {
-	try {
-		const groups = await Group.getAllGroups();
-		return res.json({ Groups: groups });
-	} catch (err) {
-		next(err);
-	}
-});
-
-const validateNewGroup = [
+const validateGroupBody = [
 	check("name")
 		.isLength({ min: 1, max: 60 })
 		.withMessage("Name must be 60 characters or less"),
@@ -105,8 +95,62 @@ const validateNewGroup = [
 	handleValidationErrors,
 ];
 
+//Edit a Group
+router.put("/:groupId", requireAuth, validateGroupBody, async (req, res, next) => {
+	try {
+		const { user } = req;
+		const { name, about, type, private, city, state } = req.body;
+		const groupId = req.params.groupId
+
+		//check to see if group exists
+		const checkGroup = await Group.findByPk(groupId);
+		if (!checkGroup) {
+			const err = new Error("Group couldn't be found");
+			err.status = 404;
+			return next(err);
+		}
+
+		//check to see if user is group organizer
+		const isAuthorized = await Group.scope({
+			method: ["isGroupOrganizer", groupId, user.id],
+		}).findOne();
+		if (!isAuthorized) {
+			const err = new Error("Forbidden");
+			err.status = 403;
+			return next(err);
+		}
+
+		const updatedGroup = await checkGroup.update({
+			name,
+			about,
+			type,
+			private,
+			city,
+			state
+		})
+
+		return res.json(updatedGroup)
+
+	} catch (err) {
+		next(err)
+	}
+})
+
+
+
+//GET all Groups
+router.get("/", async (req, res, next) => {
+	try {
+		const groups = await Group.getAllGroups();
+		return res.json({ Groups: groups });
+	} catch (err) {
+		next(err);
+	}
+});
+
+
 //Create a Group
-router.post("/", requireAuth, validateNewGroup, async (req, res, next) => {
+router.post("/", requireAuth, validateGroupBody, async (req, res, next) => {
 	try {
 		const { user } = req;
 		const { name, about, type, private, city, state } = req.body;
