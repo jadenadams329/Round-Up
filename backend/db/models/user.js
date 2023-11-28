@@ -8,19 +8,33 @@ module.exports = (sequelize, DataTypes) => {
 		 * The `models/index` file will call this method automatically.
 		 */
 		static associate(models) {
-			// define association here
+			User.belongsToMany(models.Group, {
+				through: models.Membership,
+				foreignKey: "userId",
+				otherKey: "groupId",
+			});
+
+			User.hasMany(models.Group, {
+				foreignKey: "organizerId",
+			});
+
+			User.belongsToMany(models.Event, {
+				through: models.Attendance,
+				foreignKey: "userId",
+				otherKey: "eventId",
+			});
 		}
 	}
 	User.init(
 		{
 			firstName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
 			lastName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
 			email: {
 				type: DataTypes.STRING,
 				allowNull: false,
@@ -30,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
 					isEmail: true,
 				},
 			},
-			userName: {
+			username: {
 				type: DataTypes.STRING,
 				allowNull: false,
 				unique: true,
@@ -54,11 +68,11 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			sequelize,
 			modelName: "User",
-      defaultScope: {
-        attributes: {
-          exclude: ["hashedPassword", "createdAt", "updatedAt"]
-        }
-      }
+			defaultScope: {
+				attributes: {
+					exclude: ["hashedPassword", "createdAt", "updatedAt"],
+				},
+			},
 		}
 	);
 	return User;
