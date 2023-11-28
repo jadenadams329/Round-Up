@@ -144,7 +144,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 			},
 			type: {
-				type: DataTypes.ENUM("In person"),
+				type: DataTypes.ENUM("In person", "Online"),
 				allowNull: false,
 			},
 			private: {
@@ -192,6 +192,14 @@ module.exports = (sequelize, DataTypes) => {
 						],
 					};
 				},
+				isGroupOrganizer(groupId, userId) {
+					return {
+						where: {
+							id: groupId,
+							organizerId: userId
+						}
+					}
+				}
 			},
 		}
 	);
