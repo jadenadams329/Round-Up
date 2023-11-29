@@ -8,21 +8,11 @@ const {
 } = require("../../utils/auth");
 const { User } = require("../../db/models");
 const { check } = require("express-validator");
-const { handleValidationErrors } = require("../../utils/validation");
+const { validateLogin } = require("../../utils/validation");
 
 const router = express.Router();
 
-const validateLogin = [
-	check("credential")
-		.exists({ checkFalsy: true })
-		.notEmpty()
-		.withMessage("Email or username is required"),
-	check("password")
-		.exists({ checkFalsy: true })
-		.notEmpty()
-		.withMessage("Password is required"),
-	handleValidationErrors,
-];
+
 
 // Log in a User
 router.post("/", validateLogin, async (req, res, next) => {

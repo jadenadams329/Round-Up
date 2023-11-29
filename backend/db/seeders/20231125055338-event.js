@@ -14,7 +14,7 @@ module.exports = {
 		await Event.bulkCreate(
 			[
 				{
-					venueId: null,
+					venueId: 1,
 					groupId: 1,
 					name: "BMW Meet Up",
 					description: "a meet up",
@@ -36,7 +36,7 @@ module.exports = {
 					endDate: Sequelize.literal("CURRENT_TIMESTAMP"),
 				},
 				{
-					venueId: null,
+					venueId: 3,
 					groupId: 3,
 					name: "GSD Walk",
 					description: "a dog walk",
@@ -53,10 +53,11 @@ module.exports = {
 
 	async down(queryInterface, Sequelize) {
 		const Op = Sequelize.Op;
-		return queryInterface.bulkDelete(
+		options.tableName = "Events";
+		return await queryInterface.bulkDelete(
 			options,
 			{
-				groupId: { [Op.in]: [1, 2, 3] },
+				name: { [Op.in]: ["BMW Meet Up", "Audi Meet Up", "GSD Walk"] },
 			},
 			{}
 		);

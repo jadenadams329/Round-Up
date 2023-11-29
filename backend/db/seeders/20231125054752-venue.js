@@ -44,10 +44,11 @@ module.exports = {
 
 	async down(queryInterface, Sequelize) {
 		const Op = Sequelize.Op;
-		return queryInterface.bulkDelete(
+		options.tableName = "Venues";
+		return await queryInterface.bulkDelete(
 			options,
 			{
-				groupId: { [Op.in]: [1, 2, 3] },
+				address: { [Op.in]: ["123 Fake St", "44 Egg St", "29 Apple Ave"] },
 			},
 			{}
 		);
