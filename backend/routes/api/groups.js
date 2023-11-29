@@ -151,6 +151,7 @@ router.get("/:groupId", async (req, res, next) => {
 		next(err);
 	}
 });
+
 //Delete group by ID
 router.delete("/:groupId", requireAuth, async (req, res, next) => {
 	try {

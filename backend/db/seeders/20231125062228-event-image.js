@@ -15,17 +15,17 @@ module.exports = {
 			[
 				{
 					eventId: 1,
-					url: null,
+					url: "event1",
 					preview: true,
 				},
 				{
 					eventId: 2,
-					url: null,
+					url: "event2",
 					preview: true,
 				},
 				{
 					eventId: 3,
-					url: null,
+					url: "event3",
 					preview: true,
 				},
 			],
@@ -35,10 +35,11 @@ module.exports = {
 
 	async down(queryInterface, Sequelize) {
 		const Op = Sequelize.Op;
-		return queryInterface.bulkDelete(
+		options.tableName = "Event_Images";
+		return await queryInterface.bulkDelete(
 			options,
 			{
-				eventId: { [Op.in]: [1, 2, 3] },
+				preview: { [Op.in]: [true, false] },
 			},
 			{}
 		);
