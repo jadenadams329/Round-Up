@@ -47,7 +47,9 @@ router.get("/:groupId/venues", requireAuth, async (req, res, next) => {
 			},
 		});
 
-		return res.json(venues);
+		return res.json({
+			Venues: venues
+		});
 	} catch (err) {
 		next(err);
 	}
@@ -91,7 +93,8 @@ router.post(
 				lng,
 			});
 
-			return res.json(newVenue);
+			return res.json(await Venue.findByPk(newVenue.id));
+			
 		} catch (err) {
 			next(err);
 		}

@@ -5,7 +5,6 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			Group.belongsTo(models.User, {
 				foreignKey: "organizerId",
-
 			});
 
 			Group.hasMany(models.Membership, {
@@ -27,17 +26,40 @@ module.exports = (sequelize, DataTypes) => {
 
 		static async getAllGroups() {
 			const result = await Group.findAll({
+				attributes: [
+					"id",
+					"organizerId",
+					"name",
+					"about",
+					"type",
+					"private",
+					"city",
+					"state",
+					"createdAt",
+					"updatedAt",
+					[
+						sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+						"numMembers",
+					],
+				],
 				include: [
 					{
 						model: sequelize.models.Membership,
-						separate: true,
+						where: {
+							status: ["member", "co-host"],
+						},
+						attributes: [],
+						required: false,
 					},
 					{
 						model: sequelize.models.Group_Image,
-						separate: true,
+						where: { preview: true },
+						attributes: ["url"],
+						required: false,
 					},
 				],
 				group: ["Group.id"],
+				raw: true,
 			});
 
 			const groups = Group.organizeGroupDetails(result);
@@ -64,20 +86,30 @@ module.exports = (sequelize, DataTypes) => {
 				allGroups.push(group);
 			});
 
+			console.log(allGroups);
 			const groups = Group.organizeGroupDetails(allGroups);
 
 			return groups;
 		}
 
 		static async getGroupById(groupId) {
-			console.log(groupId);
-
 			const group = await Group.findByPk(groupId, {
+				attributes: [
+					"id",
+					"organizerId",
+					"name",
+					"about",
+					"type",
+					"private",
+					"city",
+					"state",
+					"createdAt",
+					"updatedAt",
+				],
 				include: [
 					{
 						model: sequelize.models.Group_Image,
 						attributes: ["id", "url", "preview"],
-						separate: true,
 					},
 					{
 						model: sequelize.models.User,
@@ -86,46 +118,62 @@ module.exports = (sequelize, DataTypes) => {
 					{
 						model: sequelize.models.Venue,
 						attributes: {
-							exclude: ["createdAt", "updatedAt"]
+							exclude: ["createdAt", "updatedAt"],
 						},
-						separate: true,
 					},
 				],
 			});
+
+			const numMembers = await sequelize.models.Membership.count({
+				where: {
+					groupId: groupId,
+					status: ["member", "co-host"],
+				},
+			});
+
+			group.numMembers = numMembers;
+
+			let result = Group.organizeGroupById(group);
+			return result;
+		}
+
+		static organizeGroupById(result) {
+			console.log(result.numMembers);
+
+			let group = {
+				id: result.id,
+				organizerId: result.organizerId,
+				name: result.name,
+				about: result.about,
+				type: result.type,
+				private: result.private,
+				city: result.city,
+				state: result.state,
+				createdAt: result.createdAt,
+				updatedAt: result.updatedAt,
+				numMembers: result.numMembers,
+				GroupImages: result.Group_Images,
+				Organzier: result.User,
+				Venues: result.Venues,
+			};
 			return group;
 		}
 
 		static organizeGroupDetails(result) {
 			const groups = result.map((group) => {
-				let previewImage = null;
-				const numMembers = group.Memberships.reduce((count, membership) => {
-					const status = membership.get("status");
-					if (status === "co-host" || status === "member") {
-						return count + 1;
-					}
-					return count;
-				}, 0);
-
-				for (let i = 0; i < group.Group_Images.length; i++) {
-					if (group.Group_Images[i].preview && group.Group_Images[i].url) {
-						previewImage = group.Group_Images[i].url;
-					}
-				}
-
-
 				return {
-					id: group.get("id"),
-					organizerId: group.get("organizerId"),
-					name: group.get("name"),
-					about: group.get("about"),
-					type: group.get("type"),
-					private: group.get("private"),
-					city: group.get("city"),
-					state: group.get("state"),
-					createdAt: group.get("createdAt"),
-					updatedAt: group.get("updatedAt"),
-					numMembers,
-					previewImage,
+					id: group.id,
+					organizerId: group.organizerId,
+					name: group.name,
+					about: group.about,
+					type: group.type,
+					private: group.private,
+					city: group.city,
+					state: group.state,
+					createdAt: group.createdAt,
+					updatedAt: group.updatedAt,
+					numMembers: group.numMembers,
+					previewImage: group["Group_Images.url"],
 				};
 			});
 			return groups;
@@ -162,20 +210,60 @@ module.exports = (sequelize, DataTypes) => {
 						where: {
 							organizerId: userId,
 						},
+						attributes: [
+							"id",
+							"organizerId",
+							"name",
+							"about",
+							"type",
+							"private",
+							"city",
+							"state",
+							"createdAt",
+							"updatedAt",
+							[
+								sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+								"numMembers",
+							],
+						],
 						include: [
 							{
 								model: sequelize.models.Membership,
-								separate: true,
+								where: {
+									status: ["member", "co-host"],
+								},
+								attributes: [],
+								required: false,
 							},
 							{
 								model: sequelize.models.Group_Image,
-								separate: true,
+								where: { preview: true },
+								attributes: ["url"],
+								required: false,
 							},
 						],
+						group: ["Group.id"],
+						raw: true,
 					};
 				},
 				currentUserJoinedGroups(userId) {
 					return {
+						attributes: [
+							"id",
+							"organizerId",
+							"name",
+							"about",
+							"type",
+							"private",
+							"city",
+							"state",
+							"createdAt",
+							"updatedAt",
+							[
+								sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+								"numMembers",
+							],
+						],
 						include: [
 							{
 								model: sequelize.models.Membership,
@@ -183,22 +271,27 @@ module.exports = (sequelize, DataTypes) => {
 									userId: userId,
 									status: ["member", "co-host"],
 								},
+								attributes: [],
 							},
 							{
 								model: sequelize.models.Group_Image,
-								separate: true,
+								where: { preview: true },
+								attributes: ["url"],
+								required: false,
 							},
 						],
+						group: ["Group.id"],
+						raw: true,
 					};
 				},
 				isGroupOrganizer(groupId, userId) {
 					return {
 						where: {
 							id: groupId,
-							organizerId: userId
-						}
-					}
-				}
+							organizerId: userId,
+						},
+					};
+				},
 			},
 		}
 	);

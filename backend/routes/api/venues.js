@@ -37,8 +37,8 @@ router.put("/:venueId", requireAuth, validateVenue, async (req, res, next) => {
 			lng,
 		});
 
-		return res.json(updatedVenue);
-        
+		return res.json(await Venue.findByPk(updatedVenue.id));
+
 	} catch (err) {
 		next(err);
 	}
