@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
 						required: false,
 					},
 				],
-				group: ["Group.id"],
+				group: ["Group.id", "Group_Images.url"],
 				raw: true,
 			});
 
@@ -242,7 +242,7 @@ module.exports = (sequelize, DataTypes) => {
 								required: false,
 							},
 						],
-						group: ["Group.id"],
+						group: ["Group.id", "Group_Images.url"],
 						raw: true,
 					};
 				},
@@ -280,7 +280,7 @@ module.exports = (sequelize, DataTypes) => {
 								required: false,
 							},
 						],
-						group: ["Group.id"],
+						group: ["Group.id", "Group_Images.url"],
 						raw: true,
 					};
 				},
