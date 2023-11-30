@@ -65,7 +65,7 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
         })
 
     } catch (err) {
-
+        next(err)
     }
 })
 
