@@ -72,7 +72,7 @@ module.exports = (sequelize, DataTypes) => {
 								id: groupId,
 								organizerId: userId,
 							  },
-							  required: false, 
+							  required: false,
 							},
 							{
 							  model: sequelize.models.Membership,
@@ -85,7 +85,18 @@ module.exports = (sequelize, DataTypes) => {
 							},
 						  ],
 					}
-				}
+				},
+				// isAttendeeOrCoHostOrHost(userId, eventId){
+				// 	return {
+				// 		where: {
+				// 			id: userId
+				// 		},
+				// 		include: [{
+				// 			model: sequelize.models.Event
+				// 		}
+				// 		]
+				// 	}
+				// }
 			}
 		}
 	);

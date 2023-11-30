@@ -104,10 +104,51 @@ const validateVenue = [
 	handleValidationErrors,
 ];
 
+const validateEvent = [
+	check("name")
+		.isLength({ min: 4 })
+		.withMessage("Name must be at least 5 characters"),
+	check("type")
+		.isIn(["In person", "Online"])
+		.withMessage("Type must be Online or In person"),
+	check("capacity")
+		.isInt()
+		.withMessage("Capacity must be an integer"),
+	check("price")
+		.isFloat()
+		.withMessage("Price is invalid"),
+	check("description")
+		.exists({ checkFalsy: true })
+		.notEmpty()
+		.withMessage("Description is required"),
+	check("startDate")
+		.exists()
+		.withMessage("Start date must be in the future")
+		.custom((value) => {
+			let date = new Date(value)
+			console.log(date)
+			if (date <= new Date()) {
+				throw new Error("Start date must be in the future")
+			}
+			return true
+		}),
+	check("endDate")
+		.exists()
+		.withMessage("End date is less than start date")
+		.custom((value, { req }) => {
+			if (new Date(value) < new Date(req.body.startDate)){
+				throw new Error("End date is less than start date");
+			}
+			return true
+		}),
+	handleValidationErrors
+]
+
 module.exports = {
 	handleValidationErrors,
 	validateGroupBody,
 	validateSignup,
 	validateLogin,
 	validateVenue,
+	validateEvent
 };

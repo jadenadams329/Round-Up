@@ -1,6 +1,6 @@
 const express = require("express");
-const { validateGroupBody, validateVenue } = require("../../utils/validation");
-const { Group, Group_Image, User, Venue } = require("../../db/models");
+const { validateGroupBody, validateVenue, validateEvent } = require("../../utils/validation");
+const { Group, Group_Image, User, Venue, Event } = require("../../db/models");
 
 const { requireAuth } = require("../../utils/auth");
 const router = express.Router();
@@ -11,6 +11,91 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	try {
 		const userGroups = await Group.getUserGroups(user.id);
 		return res.json({ Groups: userGroups });
+	} catch (err) {
+		next(err);
+	}
+});
+
+//Create an Event for a Group specified by its id
+router.post("/:groupId/events", requireAuth, validateEvent, async (req, res, next) => {
+	try {
+		const { user } = req;
+		const groupId = req.params.groupId;
+		const {
+			venueId,
+			name,
+			type,
+			capacity,
+			price,
+			description,
+			startDate,
+			endDate,
+		} = req.body;
+
+		//check to see if group exists
+		const checkGroup = await Group.findByPk(groupId);
+		if (!checkGroup) {
+			const err = new Error("Group couldn't be found");
+			err.status = 404;
+			return next(err);
+		}
+
+		//check to see if venue exists
+		if (venueId) {
+			const checkVenue = await Venue.findByPk(venueId);
+			if (!checkVenue) {
+				const err = new Error("Venue couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+		}
+
+		//check to see if user is group organizer or cohost
+		const roles = await User.scope({
+			method: ["isOrganizerOrCoHost", user.id, groupId],
+		}).findOne();
+		if (roles.Groups.length === 0 && roles.Memberships.length === 0) {
+			const err = new Error("Forbidden");
+			err.status = 403;
+			return next(err);
+		}
+
+		//create the event
+		const newEvent = await Event.create({
+			groupId: groupId,
+			venueId,
+			name,
+			type,
+			capacity,
+			price,
+			description,
+			startDate,
+			endDate
+		})
+
+		return res.json(await Event.findByPk(newEvent.id))
+
+	} catch (err) {
+		next(err);
+	}
+});
+
+//Get Get all Events of a Group specified by its id
+router.get("/:groupId/events", async (req, res, next) => {
+	try {
+		const groupId = req.params.groupId;
+		//check to see if group exists
+		const checkGroup = await Group.findByPk(groupId);
+		if (!checkGroup) {
+			const err = new Error("Group couldn't be found");
+			err.status = 404;
+			return next(err);
+		}
+		const events = await Event.getEventsByGroupId(groupId);
+
+		return res.json({
+			Events: events,
+		});
 	} catch (err) {
 		next(err);
 	}
@@ -48,7 +133,7 @@ router.get("/:groupId/venues", requireAuth, async (req, res, next) => {
 		});
 
 		return res.json({
-			Venues: venues
+			Venues: venues,
 		});
 	} catch (err) {
 		next(err);
@@ -94,7 +179,6 @@ router.post(
 			});
 
 			return res.json(await Venue.findByPk(newVenue.id));
-			
 		} catch (err) {
 			next(err);
 		}
