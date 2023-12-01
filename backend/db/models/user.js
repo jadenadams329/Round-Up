@@ -158,6 +158,26 @@ module.exports = (sequelize, DataTypes) => {
 						}],
 						raw: true
 					}
+				},
+				isMember(userId, groupId){
+					return{
+						attributes: [
+							'id',
+							'firstName',
+							'lastName'
+						],
+						include: [{
+							model: sequelize.models.Membership,
+							where: {
+								groupId: groupId,
+								userId: userId
+							},
+							attributes: [
+								'status'
+							]
+						}],
+						raw: true
+					}
 				}
 			}
 		}

@@ -4,7 +4,14 @@ const {
 	validateVenue,
 	validateEvent,
 } = require("../../utils/validation");
-const { Group, Group_Image, User, Venue, Event } = require("../../db/models");
+const {
+	Group,
+	Group_Image,
+	User,
+	Venue,
+	Event,
+	Membership,
+} = require("../../db/models");
 
 const { requireAuth } = require("../../utils/auth");
 const router = express.Router();
@@ -15,6 +22,53 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	try {
 		const userGroups = await Group.getUserGroups(user.id);
 		return res.json({ Groups: userGroups });
+	} catch (err) {
+		next(err);
+	}
+});
+
+//Request a Membership for a Group based on the Group's id
+router.post("/:groupId/membership", requireAuth, async (req, res, next) => {
+	try {
+		const { user } = req;
+		const groupId = req.params.groupId;
+
+		//check to see if group exists
+		const group = await Group.findByPk(groupId);
+		if (!group) {
+			const err = new Error("Group couldn't be found");
+			err.status = 404;
+			return next(err);
+		}
+
+		//check membership status
+		const membership = await User.scope({
+			method: ["isMember", user.id, groupId],
+		}).findOne();
+
+		if (membership) {
+			if (membership["Memberships.status"] === "member" || membership["Memberships.status"] === "co-host") {
+				const err = new Error("User is already a member of the group");
+				err.status = 400;
+				return next(err);
+			}
+			if (membership["Memberships.status"] === "pending") {
+				const err = new Error("Membership has already been requested");
+				err.status = 400;
+				return next(err);
+			}
+		}
+
+		const newMember = await Membership.create({
+			userId: user.id,
+			groupId: groupId,
+			status: "pending",
+		});
+
+		return res.json({
+			memberId: newMember.id,
+			status: newMember.status,
+		});
 	} catch (err) {
 		next(err);
 	}
