@@ -25,8 +25,23 @@ module.exports = {
 				},
 				{
 					eventId: 3,
-					userId: 2,
+					userId: 1,
 					status: "waitlist",
+				},
+				{
+					eventId: 1,
+					userId: 1,
+					status: "host",
+				},
+				{
+					eventId: 2,
+					userId: 2,
+					status: "co-host",
+				},
+				{
+					eventId: 3,
+					userId: 3,
+					status: "host",
 				},
 			],
 			options

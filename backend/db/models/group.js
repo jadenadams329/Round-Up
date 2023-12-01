@@ -138,7 +138,6 @@ module.exports = (sequelize, DataTypes) => {
 		}
 
 		static organizeGroupById(result) {
-			console.log(result.numMembers);
 
 			let group = {
 				id: result.id,

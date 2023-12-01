@@ -35,15 +35,22 @@ module.exports = (sequelize, DataTypes) => {
 					},
 					{
 						model: sequelize.models.Attendance,
+						where: {
+							status: "attending",
+						},
 						attributes: [
 							[
 								Event.sequelize.fn(
 									"COUNT",
-									Event.sequelize.col("Attendances.id")
+									Event.sequelize.fn(
+										"DISTINCT",
+										Event.sequelize.col("Attendances.id")
+									)
 								),
 								"numAttending",
 							],
 						],
+						required: false,
 					},
 					{
 						model: sequelize.models.Event_Image,
@@ -70,18 +77,75 @@ module.exports = (sequelize, DataTypes) => {
 			return events;
 		}
 
+		static async getEventsByGroupId(groupId) {
+			const result = await Event.findAll({
+				where: {
+					groupId: groupId,
+				},
+				include: [
+					{
+						model: sequelize.models.Group,
+						attributes: ["id", "name", "city", "state"],
+					},
+					{
+						model: sequelize.models.Venue,
+						attributes: ["id", "city", "state"],
+					},
+					{
+						model: sequelize.models.Attendance,
+						where: {
+							status: "attending",
+						},
+						attributes: [
+							[
+								Event.sequelize.fn(
+									"COUNT",
+									Event.sequelize.fn(
+										"DISTINCT",
+										Event.sequelize.col("Attendances.id")
+									)
+								),
+								"numAttending",
+							],
+						],
+						required: false,
+					},
+					{
+						model: sequelize.models.Event_Image,
+						attributes: ["url"],
+						where: { preview: true },
+						required: false,
+					},
+				],
+				attributes: [
+					"id",
+					"groupId",
+					"venueId",
+					"name",
+					"type",
+					"startDate",
+					"endDate",
+				],
+				group: ["Event.id", "Group.id", "Venue.id", "Event_Images.id"],
+				raw: true,
+			});
+
+			const events = this.organizeEvents(result);
+
+			return events;
+		}
+
 		static organizeEvents(result) {
 			const events = result.map((event) => {
-        
 				let venue = {
 					id: event["Venue.id"],
 					city: event["Venue.city"],
 					state: event["Venue.state"],
 				};
 
-        if(!venue.id && !venue.city && !venue.state){
-          venue = null
-        }
+				if (!venue.id) {
+					venue = null;
+				}
 
 				return {
 					id: event.id,
@@ -91,8 +155,8 @@ module.exports = (sequelize, DataTypes) => {
 					type: event.type,
 					startDate: event.startDate,
 					endDate: event.endDate,
-					numAttending: event.numAttending || 0,
-					previewImage: event["Event_Images.url"] || null,
+					numAttending: event["Attendances.numAttending"],
+					previewImage: event["Event_Images.url"],
 					Group: {
 						id: event["Group.id"],
 						name: event["Group.name"],
@@ -103,6 +167,59 @@ module.exports = (sequelize, DataTypes) => {
 				};
 			});
 			return events;
+		}
+
+		static async getEventById(eventId) {
+			const event = await Event.findOne({
+				where: {
+					id: eventId,
+				},
+				include: [
+					{
+						model: sequelize.models.Group,
+						attributes: ["id", "name", "private", "city", "state"],
+					},
+					{
+						model: sequelize.models.Venue,
+						attributes: ["id", "address", "city", "state", "lat", "lng"],
+					},
+					{
+						model: sequelize.models.Event_Image,
+						attributes: ["id", "url", "preview"],
+					},
+				],
+			});
+
+      const numAttending = await sequelize.models.Attendance.count({
+				where: {
+					eventId: eventId,
+					status: 'attending',
+				},
+			});
+
+			event.numAttending = numAttending;
+
+      const result = Event.organizeEvent(event)
+			return result;
+		}
+
+		static organizeEvent(obj) {
+			return {
+				id: obj.id,
+				groupId: obj.groupId,
+				venueId: obj.venueId,
+				name: obj.name,
+        description: obj.description,
+				type: obj.type,
+        capacity: obj.capacity,
+        price: obj.price,
+				startDate: obj.startDate,
+				endDate: obj.endDate,
+				numAttending: obj.numAttending,
+        Group: obj.Group,
+        Venue: obj.Venue,
+        EventImages: obj.Event_Images
+			};
 		}
 	}
 	Event.init(
@@ -119,7 +236,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 			},
 			capacity: DataTypes.INTEGER,
-			price: DataTypes.INTEGER,
+			price: DataTypes.FLOAT,
 			startDate: {
 				type: DataTypes.DATE,
 				allowNull: false,

@@ -72,7 +72,7 @@ module.exports = (sequelize, DataTypes) => {
 								id: groupId,
 								organizerId: userId,
 							  },
-							  required: false, 
+							  required: false,
 							},
 							{
 							  model: sequelize.models.Membership,
@@ -84,6 +84,26 @@ module.exports = (sequelize, DataTypes) => {
 							  required: false,
 							},
 						  ],
+					}
+				},
+				isAttendeeOrCoHostOrHost(userId, eventId){
+					return {
+						where: {
+							id: userId,
+						},
+						include: [{
+							model: sequelize.models.Attendance,
+							where: {
+								userId: userId,
+								eventId: eventId,
+								status: ['host', 'co-host', 'attending']
+							}
+						},
+						],
+						attributes: [
+							"id",
+							"username"
+						],
 					}
 				}
 			}
