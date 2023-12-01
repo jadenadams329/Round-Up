@@ -7,6 +7,7 @@ const router = express.Router();
 //Add an Image to an Event based on the Event's id
 router.post("/:eventId/images", requireAuth, async (req, res, next) => {
 	try {
+		const { user } = req;
 		const { url, preview } = req.body;
 		const eventId = req.params.eventId;
 		//Check to see if event exists
@@ -17,29 +18,35 @@ router.post("/:eventId/images", requireAuth, async (req, res, next) => {
 			return next(err);
 		}
 
-		/* TODO:
-        figure out what the authorization means
-         */
+		//check to see if user is authorized
+		const roles = await User.scope({
+			method: ["isAttendeeOrCoHostOrHost", user.id, eventId],
+		}).findOne();
+		if (!roles) {
+			const err = new Error("Forbidden");
+			err.status = 403;
+			return next(err);
+		}
 
 		//add image to event
 		const addImage = await Event_Image.create({ eventId, url, preview });
-		return res.json({
-			id: addImage.id,
-			url: addImage.url,
-			preview: addImage.preview,
-		});
+        return res.json({
+            id: addImage.id,
+            url: addImage.url,
+            preview: addImage.preview
+        })
 	} catch (err) {
 		next(err);
 	}
 });
 
 //Delete an Event specified by its id
-router.delete('/:eventId', requireAuth, async (req, res, next) => {
-    try {
-        const { user } = req;
+router.delete("/:eventId", requireAuth, async (req, res, next) => {
+	try {
+		const { user } = req;
 		const eventId = req.params.eventId;
 
-        //check to see if event exists
+		//check to see if event exists
 		const checkEvent = await Event.findByPk(eventId);
 		if (!checkEvent) {
 			const err = new Error("Event couldn't be found");
@@ -47,7 +54,7 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
 			return next(err);
 		}
 
-        //check to see if user is group organizer or cohost
+		//check to see if user is group organizer or cohost
 		const roles = await User.scope({
 			method: ["isOrganizerOrCoHost", user.id, checkEvent.groupId],
 		}).findOne();
@@ -57,17 +64,16 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
 			return next(err);
 		}
 
-        //delete event
-        await checkEvent.destroy();
+		//delete event
+		await checkEvent.destroy();
 
-        return res.json({
-            message: 'Successsfully deleted'
-        })
-
-    } catch (err) {
-        next(err)
-    }
-})
+		return res.json({
+			message: "Successsfully deleted",
+		});
+	} catch (err) {
+		next(err);
+	}
+});
 
 //Edit an Event specified by its id
 router.put("/:eventId", requireAuth, validateEvent, async (req, res, next) => {
@@ -127,7 +133,6 @@ router.put("/:eventId", requireAuth, validateEvent, async (req, res, next) => {
 
 		//return the event that was just updated
 		return res.json(await Event.findByPk(updatedEvent.id));
-
 	} catch (err) {
 		next(err);
 	}

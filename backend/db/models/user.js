@@ -86,17 +86,26 @@ module.exports = (sequelize, DataTypes) => {
 						  ],
 					}
 				},
-				// isAttendeeOrCoHostOrHost(userId, eventId){
-				// 	return {
-				// 		where: {
-				// 			id: userId
-				// 		},
-				// 		include: [{
-				// 			model: sequelize.models.Event
-				// 		}
-				// 		]
-				// 	}
-				// }
+				isAttendeeOrCoHostOrHost(userId, eventId){
+					return {
+						where: {
+							id: userId,
+						},
+						include: [{
+							model: sequelize.models.Attendance,
+							where: {
+								userId: userId,
+								eventId: eventId,
+								status: ['host', 'co-host', 'attending']
+							}
+						},
+						],
+						attributes: [
+							"id",
+							"username"
+						],
+					}
+				}
 			}
 		}
 	);
