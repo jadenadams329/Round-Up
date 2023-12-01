@@ -12,6 +12,20 @@ module.exports = (sequelize, DataTypes) => {
 			User.hasMany(models.Membership, { foreignKey: "userId" });
 			User.hasMany(models.Attendance, { foreignKey: "userId" });
 		}
+
+		static organizeMembers(result) {
+			const members = result.map((member) => {
+				return {
+					id: member.id,
+					firstName: member.firstName,
+					lastName: member.lastName,
+					Membership: {
+						status: member['Memberships.status']
+					}
+				}
+			})
+			return members
+		}
 	}
 	User.init(
 		{
@@ -104,6 +118,45 @@ module.exports = (sequelize, DataTypes) => {
 							"id",
 							"username"
 						],
+					}
+				},
+				allMembersAuthorized(groupId){
+					return {
+						attributes: [
+							'id',
+							'firstName',
+							'lastName'
+						],
+						include: [{
+							model: sequelize.models.Membership,
+							where: {
+								groupId: groupId
+							},
+							attributes: [
+								'status'
+							]
+						}],
+						raw: true
+					}
+				},
+				allMembers(groupId) {
+					return {
+						attributes: [
+							'id',
+							'firstName',
+							'lastName'
+						],
+						include: [{
+							model: sequelize.models.Membership,
+							where: {
+								groupId: groupId,
+								status: ["member", "co-host"]
+							},
+							attributes: [
+								'status'
+							]
+						}],
+						raw: true
 					}
 				}
 			}
