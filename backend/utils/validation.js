@@ -32,6 +32,17 @@ const validateMembershipUpdate = [
 	handleValidationErrors
 ]
 
+const validateAttendanceUpdate = [
+	check("status")
+		.custom((value) => {
+			if (value === 'pending') {
+				throw new Error("Cannot change an attendance status to pending");
+			}
+			return true;
+		}),
+	handleValidationErrors
+]
+
 const validateGroupBody = [
 	check("name")
 		.isLength({ min: 1, max: 60 })
@@ -162,5 +173,6 @@ module.exports = {
 	validateLogin,
 	validateVenue,
 	validateEvent,
-	validateMembershipUpdate
+	validateMembershipUpdate,
+	validateAttendanceUpdate
 };

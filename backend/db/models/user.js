@@ -178,7 +178,47 @@ module.exports = (sequelize, DataTypes) => {
 						}],
 						raw: true
 					}
-				}
+				},
+				allAttendeesAuthorized(eventId){
+					return {
+						attributes: [
+							'id',
+							'firstName',
+							'lastName'
+						],
+						include: [{
+							model: sequelize.models.Attendance,
+							where: {
+								eventId: eventId,
+								status: ["attending", "waitlist", "pending"]
+							},
+							attributes: [
+								'status'
+							]
+						}],
+						raw: true
+					}
+				},
+				allAttendees(eventId){
+					return {
+						attributes: [
+							'id',
+							'firstName',
+							'lastName'
+						],
+						include: [{
+							model: sequelize.models.Attendance,
+							where: {
+								eventId: eventId,
+								status: ["attending", "waitlist"]
+							},
+							attributes: [
+								'status'
+							]
+						}],
+						raw: true
+					}
+				},
 			}
 		}
 	);

@@ -48,12 +48,10 @@ router.delete(
 			if (roles.Groups.length >= 1) {
 				isOrganizer = true;
 			}
-			console.log(user.id, memberId);
+
 			//check if user is the user whose membership is being deleted
 			if (user.id == memberId) {
-				console.log(isUserMember);
 				isUserMember = true;
-				console.log(isUserMember);
 			}
 
 			//check to see if user exists
