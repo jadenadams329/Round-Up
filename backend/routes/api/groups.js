@@ -3,6 +3,7 @@ const {
 	validateGroupBody,
 	validateVenue,
 	validateEvent,
+	validateMembershipUpdate,
 } = require("../../utils/validation");
 const {
 	Group,
@@ -27,6 +28,165 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	}
 });
 
+//Delete membership to a group specified by id
+router.delete(
+	"/:groupId/membership/:memberId",
+	requireAuth,
+	async (req, res, next) => {
+		try {
+			const { user } = req;
+			const groupId = req.params.groupId;
+			const memberId = req.params.memberId;
+
+			let isOrganizer = false;
+			let isUserMember = false;
+
+			//check if user is organizer
+			const roles = await User.scope({
+				method: ["isOrganizerOrCoHost", user.id, groupId],
+			}).findOne();
+			if (roles.Groups.length >= 1) {
+				isOrganizer = true;
+			}
+			console.log(user.id, memberId);
+			//check if user is the user whose membership is being deleted
+			if (user.id == memberId) {
+				console.log(isUserMember);
+				isUserMember = true;
+				console.log(isUserMember);
+			}
+
+			//check to see if user exists
+			const userToBeUpdated = await User.findByPk(memberId);
+			if (!userToBeUpdated) {
+				const err = new Error("User couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if group exists
+			const group = await Group.findByPk(groupId);
+			if (!group) {
+				const err = new Error("Group couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if membership exists
+			const isMember = await Membership.findOne({
+				where: {
+					userId: memberId,
+					groupId: groupId,
+				},
+			});
+			if (!isMember) {
+				const err = new Error("Membership does not exist for this User");
+				err.status = 404;
+				return next(err);
+			}
+
+			if (isOrganizer || isUserMember) {
+				await isMember.destroy();
+				return res.json({
+					message: "Successfully deleted membership from group",
+				});
+			} else {
+				const err = new Error("Forbidden");
+				err.status = 403;
+				return next(err);
+			}
+		} catch (err) {
+			next(err);
+		}
+	}
+);
+
+//Change the status of a membership for a group specified by id
+router.put(
+	"/:groupId/membership",
+	requireAuth,
+	validateMembershipUpdate,
+	async (req, res, next) => {
+		try {
+			const { user } = req;
+			const groupId = req.params.groupId;
+			const { memberId, status } = req.body;
+
+			let isOrganizer = false;
+			let isCoHost = false;
+
+			//check if user is organizer or co-host
+			const roles = await User.scope({
+				method: ["isOrganizerOrCoHost", user.id, groupId],
+			}).findOne();
+
+			if (roles.Groups.length >= 1) {
+				isOrganizer = true;
+			}
+
+			if (roles.Memberships.length >= 1) {
+				isCoHost = true;
+			}
+
+			//check to see if user exists
+			const userToBeUpdated = await User.findByPk(memberId);
+			if (!userToBeUpdated) {
+				const err = new Error("User couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if group exists
+			const group = await Group.findByPk(groupId);
+			if (!group) {
+				const err = new Error("Group couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if membership exists
+			const isMember = await Membership.findOne({
+				where: {
+					userId: memberId,
+					groupId: groupId,
+				},
+			});
+			if (!isMember) {
+				const err = new Error(
+					"Membership between the user and the group does not exist"
+				);
+				err.status = 404;
+				return next(err);
+			}
+
+			let updatedMembership = isMember;
+
+			if (isOrganizer && (status === "co-host" || status === "member")) {
+				updatedMembership = await isMember.update({
+					status,
+				});
+			} else if (isCoHost && status === "member") {
+				updatedMembership = await isMember.update({
+					status,
+				});
+			} else {
+				const err = new Error("Forbidden");
+				err.status = 403;
+				return next(err);
+			}
+
+			return res.json({
+				id: updatedMembership.id,
+				groupId: updatedMembership.groupId,
+				memberId: updatedMembership.userId,
+				status: updatedMembership.status,
+			});
+		} catch (err) {
+			next(err);
+		}
+	}
+);
+
 //Request a Membership for a Group based on the Group's id
 router.post("/:groupId/membership", requireAuth, async (req, res, next) => {
 	try {
@@ -47,7 +207,10 @@ router.post("/:groupId/membership", requireAuth, async (req, res, next) => {
 		}).findOne();
 
 		if (membership) {
-			if (membership["Memberships.status"] === "member" || membership["Memberships.status"] === "co-host") {
+			if (
+				membership["Memberships.status"] === "member" ||
+				membership["Memberships.status"] === "co-host"
+			) {
 				const err = new Error("User is already a member of the group");
 				err.status = 400;
 				return next(err);
@@ -66,7 +229,7 @@ router.post("/:groupId/membership", requireAuth, async (req, res, next) => {
 		});
 
 		return res.json({
-			memberId: newMember.id,
+			memberId: newMember.userId,
 			status: newMember.status,
 		});
 	} catch (err) {

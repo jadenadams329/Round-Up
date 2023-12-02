@@ -23,7 +23,7 @@ module.exports = {
 					state: "CA",
 				},
 				{
-					organizerId: 2,
+					organizerId: 1,
 					name: "Audi Owners",
 					about: "Group for Audi owners",
 					type: "In person",
@@ -32,7 +32,7 @@ module.exports = {
 					state: "CA",
 				},
 				{
-					organizerId: 3,
+					organizerId: 1,
 					name: "German Shepherd Dogs",
 					about: "Group for all things German Shepherds",
 					type: "In person",
