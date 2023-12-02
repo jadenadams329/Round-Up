@@ -1,6 +1,18 @@
 const express = require("express");
-const { validateGroupBody, validateVenue, validateEvent } = require("../../utils/validation");
-const { Group, Group_Image, User, Venue, Event } = require("../../db/models");
+const {
+	validateGroupBody,
+	validateVenue,
+	validateEvent,
+	validateMembershipUpdate,
+} = require("../../utils/validation");
+const {
+	Group,
+	Group_Image,
+	User,
+	Venue,
+	Event,
+	Membership,
+} = require("../../db/models");
 
 const { requireAuth } = require("../../utils/auth");
 const router = express.Router();
@@ -16,69 +28,322 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	}
 });
 
-//Create an Event for a Group specified by its id
-router.post("/:groupId/events", requireAuth, validateEvent, async (req, res, next) => {
+//Delete membership to a group specified by id
+router.delete(
+	"/:groupId/membership/:memberId",
+	requireAuth,
+	async (req, res, next) => {
+		try {
+			const { user } = req;
+			const groupId = req.params.groupId;
+			const memberId = req.params.memberId;
+
+			let isOrganizer = false;
+			let isUserMember = false;
+
+			//check if user is organizer
+			const roles = await User.scope({
+				method: ["isOrganizerOrCoHost", user.id, groupId],
+			}).findOne();
+			if (roles.Groups.length >= 1) {
+				isOrganizer = true;
+			}
+			console.log(user.id, memberId);
+			//check if user is the user whose membership is being deleted
+			if (user.id == memberId) {
+				console.log(isUserMember);
+				isUserMember = true;
+				console.log(isUserMember);
+			}
+
+			//check to see if user exists
+			const userToBeUpdated = await User.findByPk(memberId);
+			if (!userToBeUpdated) {
+				const err = new Error("User couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if group exists
+			const group = await Group.findByPk(groupId);
+			if (!group) {
+				const err = new Error("Group couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if membership exists
+			const isMember = await Membership.findOne({
+				where: {
+					userId: memberId,
+					groupId: groupId,
+				},
+			});
+			if (!isMember) {
+				const err = new Error("Membership does not exist for this User");
+				err.status = 404;
+				return next(err);
+			}
+
+			if (isOrganizer || isUserMember) {
+				await isMember.destroy();
+				return res.json({
+					message: "Successfully deleted membership from group",
+				});
+			} else {
+				const err = new Error("Forbidden");
+				err.status = 403;
+				return next(err);
+			}
+		} catch (err) {
+			next(err);
+		}
+	}
+);
+
+//Change the status of a membership for a group specified by id
+router.put(
+	"/:groupId/membership",
+	requireAuth,
+	validateMembershipUpdate,
+	async (req, res, next) => {
+		try {
+			const { user } = req;
+			const groupId = req.params.groupId;
+			const { memberId, status } = req.body;
+
+			let isOrganizer = false;
+			let isCoHost = false;
+
+			//check if user is organizer or co-host
+			const roles = await User.scope({
+				method: ["isOrganizerOrCoHost", user.id, groupId],
+			}).findOne();
+
+			if (roles.Groups.length >= 1) {
+				isOrganizer = true;
+			}
+
+			if (roles.Memberships.length >= 1) {
+				isCoHost = true;
+			}
+
+			//check to see if user exists
+			const userToBeUpdated = await User.findByPk(memberId);
+			if (!userToBeUpdated) {
+				const err = new Error("User couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if group exists
+			const group = await Group.findByPk(groupId);
+			if (!group) {
+				const err = new Error("Group couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if membership exists
+			const isMember = await Membership.findOne({
+				where: {
+					userId: memberId,
+					groupId: groupId,
+				},
+			});
+			if (!isMember) {
+				const err = new Error(
+					"Membership between the user and the group does not exist"
+				);
+				err.status = 404;
+				return next(err);
+			}
+
+			let updatedMembership = isMember;
+
+			if (isOrganizer && (status === "co-host" || status === "member")) {
+				updatedMembership = await isMember.update({
+					status,
+				});
+			} else if (isCoHost && status === "member") {
+				updatedMembership = await isMember.update({
+					status,
+				});
+			} else {
+				const err = new Error("Forbidden");
+				err.status = 403;
+				return next(err);
+			}
+
+			return res.json({
+				id: updatedMembership.id,
+				groupId: updatedMembership.groupId,
+				memberId: updatedMembership.userId,
+				status: updatedMembership.status,
+			});
+		} catch (err) {
+			next(err);
+		}
+	}
+);
+
+//Request a Membership for a Group based on the Group's id
+router.post("/:groupId/membership", requireAuth, async (req, res, next) => {
 	try {
 		const { user } = req;
 		const groupId = req.params.groupId;
-		const {
-			venueId,
-			name,
-			type,
-			capacity,
-			price,
-			description,
-			startDate,
-			endDate,
-		} = req.body;
 
 		//check to see if group exists
-		const checkGroup = await Group.findByPk(groupId);
-		if (!checkGroup) {
+		const group = await Group.findByPk(groupId);
+		if (!group) {
 			const err = new Error("Group couldn't be found");
 			err.status = 404;
 			return next(err);
 		}
 
-		//check to see if venue exists
-		if (venueId) {
-			const checkVenue = await Venue.findByPk(venueId);
-			if (!checkVenue) {
-				const err = new Error("Venue couldn't be found");
-				err.status = 404;
+		//check membership status
+		const membership = await User.scope({
+			method: ["isMember", user.id, groupId],
+		}).findOne();
+
+		if (membership) {
+			if (
+				membership["Memberships.status"] === "member" ||
+				membership["Memberships.status"] === "co-host"
+			) {
+				const err = new Error("User is already a member of the group");
+				err.status = 400;
+				return next(err);
+			}
+			if (membership["Memberships.status"] === "pending") {
+				const err = new Error("Membership has already been requested");
+				err.status = 400;
 				return next(err);
 			}
 		}
 
-		//check to see if user is group organizer or cohost
-		const roles = await User.scope({
-			method: ["isOrganizerOrCoHost", user.id, groupId],
-		}).findOne();
-		if (roles.Groups.length === 0 && roles.Memberships.length === 0) {
-			const err = new Error("Forbidden");
-			err.status = 403;
-			return next(err);
-		}
-
-		//create the event
-		const newEvent = await Event.create({
+		const newMember = await Membership.create({
+			userId: user.id,
 			groupId: groupId,
-			venueId,
-			name,
-			type,
-			capacity,
-			price,
-			description,
-			startDate,
-			endDate
-		})
+			status: "pending",
+		});
 
-		return res.json(await Event.findByPk(newEvent.id))
-
+		return res.json({
+			memberId: newMember.userId,
+			status: newMember.status,
+		});
 	} catch (err) {
 		next(err);
 	}
 });
+
+//Get all Members of a Group specified by its id
+router.get("/:groupId/members", async (req, res, next) => {
+	try {
+		const { user } = req;
+		const groupId = req.params.groupId;
+		//check to see if group exists
+		const group = await Group.findByPk(groupId);
+		if (!group) {
+			const err = new Error("Group couldn't be found");
+			err.status = 404;
+			return next(err);
+		}
+
+		let scopeMethod = "allMembers";
+		//check to see if there is a user
+		if (user) {
+			//check if user is organizer or co-host
+			const roles = await User.scope({
+				method: ["isOrganizerOrCoHost", user.id, groupId],
+			}).findOne();
+			//if they are, change scope method
+			if (roles.Groups.length >= 1 || roles.Memberships.length >= 1) {
+				scopeMethod = "allMembersAuthorized";
+			}
+		}
+
+		const members = await User.scope({
+			method: [scopeMethod, groupId],
+		}).findAll();
+
+		const memberships = User.organizeMembers(members);
+
+		res.json({
+			Members: memberships,
+		});
+	} catch (err) {
+		next(err);
+	}
+});
+
+//Create an Event for a Group specified by its id
+router.post(
+	"/:groupId/events",
+	requireAuth,
+	validateEvent,
+	async (req, res, next) => {
+		try {
+			const { user } = req;
+			const groupId = req.params.groupId;
+			const {
+				venueId,
+				name,
+				type,
+				capacity,
+				price,
+				description,
+				startDate,
+				endDate,
+			} = req.body;
+
+			//check to see if group exists
+			const checkGroup = await Group.findByPk(groupId);
+			if (!checkGroup) {
+				const err = new Error("Group couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if venue exists
+			if (venueId) {
+				const checkVenue = await Venue.findByPk(venueId);
+				if (!checkVenue) {
+					const err = new Error("Venue couldn't be found");
+					err.status = 404;
+					return next(err);
+				}
+			}
+
+			//check to see if user is group organizer or cohost
+			const roles = await User.scope({
+				method: ["isOrganizerOrCoHost", user.id, groupId],
+			}).findOne();
+			if (roles.Groups.length === 0 && roles.Memberships.length === 0) {
+				const err = new Error("Forbidden");
+				err.status = 403;
+				return next(err);
+			}
+
+			//create the event
+			const newEvent = await Event.create({
+				groupId: groupId,
+				venueId,
+				name,
+				type,
+				capacity,
+				price,
+				description,
+				startDate,
+				endDate,
+			});
+
+			return res.json(await Event.findByPk(newEvent.id));
+		} catch (err) {
+			next(err);
+		}
+	}
+);
 
 //Get Get all Events of a Group specified by its id
 router.get("/:groupId/events", async (req, res, next) => {
