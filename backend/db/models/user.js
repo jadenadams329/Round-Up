@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
 					firstName: member.firstName,
 					lastName: member.lastName,
 					Membership: {
-						status: member['Memberships.status']
-					}
-				}
-			})
-			return members
+						status: member["Memberships.status"],
+					},
+				};
+			});
+			return members;
 		}
 	}
 	User.init(
@@ -81,145 +81,123 @@ module.exports = (sequelize, DataTypes) => {
 						where: { id: userId },
 						include: [
 							{
-							  model: sequelize.models.Group,
-							  where: {
-								id: groupId,
-								organizerId: userId,
-							  },
-							  required: false,
+								model: sequelize.models.Group,
+								where: {
+									id: groupId,
+									organizerId: userId,
+								},
+								required: false,
 							},
 							{
-							  model: sequelize.models.Membership,
-							  where: {
-								userId: userId,
-								groupId: groupId,
-								status: 'co-host',
-							  },
-							  required: false,
+								model: sequelize.models.Membership,
+								where: {
+									userId: userId,
+									groupId: groupId,
+									status: "co-host",
+								},
+								required: false,
 							},
-						  ],
-					}
+						],
+					};
 				},
-				isAttendeeOrCoHostOrHost(userId, eventId){
+				isAttendeeOrCoHostOrHost(userId, eventId) {
 					return {
 						where: {
 							id: userId,
 						},
-						include: [{
-							model: sequelize.models.Attendance,
-							where: {
-								userId: userId,
-								eventId: eventId,
-								status: ['host', 'co-host', 'attending']
-							}
-						},
-						],
-						attributes: [
-							"id",
-							"username"
-						],
-					}
-				},
-				allMembersAuthorized(groupId){
-					return {
-						attributes: [
-							'id',
-							'firstName',
-							'lastName'
-						],
-						include: [{
-							model: sequelize.models.Membership,
-							where: {
-								groupId: groupId
+						include: [
+							{
+								model: sequelize.models.Attendance,
+								where: {
+									userId: userId,
+									eventId: eventId,
+									status: ["host", "co-host", "attending"],
+								},
 							},
-							attributes: [
-								'status'
-							]
-						}],
-						raw: true
-					}
+						],
+						attributes: ["id", "username"],
+					};
+				},
+				allMembersAuthorized(groupId) {
+					return {
+						attributes: ["id", "firstName", "lastName"],
+						include: [
+							{
+								model: sequelize.models.Membership,
+								where: {
+									groupId: groupId,
+								},
+								attributes: ["status"],
+							},
+						],
+						raw: true,
+					};
 				},
 				allMembers(groupId) {
 					return {
-						attributes: [
-							'id',
-							'firstName',
-							'lastName'
-						],
-						include: [{
-							model: sequelize.models.Membership,
-							where: {
-								groupId: groupId,
-								status: ["member", "co-host"]
+						attributes: ["id", "firstName", "lastName"],
+						include: [
+							{
+								model: sequelize.models.Membership,
+								where: {
+									groupId: groupId,
+									status: ["member", "co-host"],
+								},
+								attributes: ["status"],
 							},
-							attributes: [
-								'status'
-							]
-						}],
-						raw: true
-					}
-				},
-				isMember(userId, groupId){
-					return{
-						attributes: [
-							'id',
-							'firstName',
-							'lastName'
 						],
-						include: [{
-							model: sequelize.models.Membership,
-							where: {
-								groupId: groupId,
-								userId: userId
-							},
-							attributes: [
-								'status'
-							]
-						}],
-						raw: true
-					}
+						raw: true,
+					};
 				},
-				allAttendeesAuthorized(eventId){
+				isMember(userId, groupId) {
 					return {
-						attributes: [
-							'id',
-							'firstName',
-							'lastName'
-						],
-						include: [{
-							model: sequelize.models.Attendance,
-							where: {
-								eventId: eventId,
-								status: ["attending", "waitlist", "pending"]
+						attributes: ["id", "firstName", "lastName"],
+						include: [
+							{
+								model: sequelize.models.Membership,
+								where: {
+									groupId: groupId,
+									userId: userId,
+								},
+								attributes: ["status"],
 							},
-							attributes: [
-								'status'
-							]
-						}],
-						raw: true
-					}
+						],
+						raw: true,
+					};
 				},
-				allAttendees(eventId){
+				allAttendeesAuthorized(eventId) {
 					return {
-						attributes: [
-							'id',
-							'firstName',
-							'lastName'
-						],
-						include: [{
-							model: sequelize.models.Attendance,
-							where: {
-								eventId: eventId,
-								status: ["attending", "waitlist"]
+						attributes: ["id", "firstName", "lastName"],
+						include: [
+							{
+								model: sequelize.models.Attendance,
+								where: {
+									eventId: eventId,
+									status: ["attending", "waitlist", "pending"],
+								},
+								attributes: ["status"],
 							},
-							attributes: [
-								'status'
-							]
-						}],
-						raw: true
-					}
+						],
+						raw: true,
+					};
 				},
-			}
+				allAttendees(eventId) {
+					return {
+						attributes: ["id", "firstName", "lastName"],
+						include: [
+							{
+								model: sequelize.models.Attendance,
+								where: {
+									eventId: eventId,
+									status: ["attending", "waitlist"],
+								},
+								attributes: ["status"],
+							},
+						],
+						raw: true,
+					};
+				},
+			},
 		}
 	);
 	return User;

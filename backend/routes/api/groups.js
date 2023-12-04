@@ -12,7 +12,7 @@ const {
 	Venue,
 	Event,
 	Membership,
-	Attendance
+	Attendance,
 } = require("../../db/models");
 
 const { requireAuth } = require("../../utils/auth");
@@ -341,8 +341,8 @@ router.post(
 			await Attendance.create({
 				eventId: newEvent.id,
 				userId: user.id,
-				status: "host"
-			})
+				status: "host",
+			});
 
 			return res.json(await Event.findByPk(newEvent.id));
 		} catch (err) {
@@ -495,7 +495,7 @@ router.post("/:groupId/images", requireAuth, async (req, res, next) => {
 router.get("/:groupId", async (req, res, next) => {
 	const groupId = req.params.groupId;
 	try {
-		const isGroup = await Group.findByPk(groupId)
+		const isGroup = await Group.findByPk(groupId);
 		if (!isGroup) {
 			const err = new Error("Group couldn't be found");
 			err.status = 404;
@@ -503,8 +503,6 @@ router.get("/:groupId", async (req, res, next) => {
 		} else {
 			return res.json(await Group.getGroupById(groupId));
 		}
-
-
 	} catch (err) {
 		next(err);
 	}

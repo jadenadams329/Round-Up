@@ -131,7 +131,7 @@ const validateEvent = [
 		.isLength({ min: 4 })
 		.withMessage("Name must be at least 5 characters"),
 	check("type")
-		.isIn(["In person", "Online"])
+		.isIn(["In Person", "Online"])
 		.withMessage("Type must be Online or In person"),
 	check("capacity")
 		.isInt()
@@ -172,6 +172,30 @@ const validateEvent = [
 	handleValidationErrors
 ]
 
+const validateQueryParams = [
+	check("page")
+		.optional({ checkFalsy: true })
+		.isInt({min: 1})
+		.withMessage("Page must be greater than or equal to 1"),
+	check("size")
+		.optional({ checkFalsy: true })
+		.isInt({min: 1})
+		.withMessage("Size must be greater than or equal to 1"),
+	check("name")
+		.optional({ checkFalsy: true })
+		.isString()
+		.withMessage("Name must be a string"),
+	check("type")
+		.optional({ checkFalsy: true })
+		.isIn(["In Person", "Online"])
+		.withMessage("Type must be 'Online' or 'In Person'"),
+	check("startDate")
+		.optional({ checkFalsy: true })
+		.isDate()
+		.withMessage("Start date must be a valid datetime"),
+	handleValidationErrors
+]
+
 module.exports = {
 	handleValidationErrors,
 	validateGroupBody,
@@ -180,5 +204,6 @@ module.exports = {
 	validateVenue,
 	validateEvent,
 	validateMembershipUpdate,
-	validateAttendanceUpdate
+	validateAttendanceUpdate,
+	validateQueryParams
 };
