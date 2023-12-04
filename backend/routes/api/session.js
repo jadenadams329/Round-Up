@@ -12,8 +12,6 @@ const { validateLogin } = require("../../utils/validation");
 
 const router = express.Router();
 
-
-
 // Log in a User
 router.post("/", validateLogin, async (req, res, next) => {
 	const { credential, password } = req.body;

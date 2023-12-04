@@ -6,156 +6,167 @@ const {
 	Venue,
 	Attendance,
 } = require("../../db/models");
-const { validateEvent, validateAttendanceUpdate } = require("../../utils/validation");
+const {
+	validateEvent,
+	validateAttendanceUpdate,
+	validateQueryParams,
+} = require("../../utils/validation");
 const { requireAuth } = require("../../utils/auth");
-const attendance = require("../../db/models/attendance");
+
 const router = express.Router();
 
 //Delete attendance to an event specified by id
-router.delete("/:eventId/attendance/:userId", requireAuth, async (req, res, next) => {
-	try {
-		const { user } = req;
-		const eventId = req.params.eventId;
-		const userId = req.params.userId
+router.delete(
+	"/:eventId/attendance/:userId",
+	requireAuth,
+	async (req, res, next) => {
+		try {
+			const { user } = req;
+			const eventId = req.params.eventId;
+			const userId = req.params.userId;
 
-		let isOrganizer = false;
-		let isUserMember = false;
+			let isOrganizer = false;
+			let isUserMember = false;
 
-		//check if event exist AND grab groupId
-		const event = await Event.findByPk(eventId);
-		if (!event) {
-			const err = new Error("Event couldn't be found");
-			err.status = 404;
-			return next(err);
-		}
-
-		//check if user is organizer
-		const roles = await User.scope({
-			method: ["isOrganizerOrCoHost", user.id, event.groupId],
-		}).findOne();
-		if (roles.Groups.length >= 1) {
-			isOrganizer = true;
-		}
-
-		//check if user is the user whose membership is being deleted
-		if (user.id == userId) {
-			isUserMember = true;
-		}
-
-		//check to see if user exists
-		const userToBeUpdated = await User.findByPk(userId);
-		if (!userToBeUpdated) {
-			const err = new Error("User couldn't be found");
-			err.status = 404;
-			return next(err);
-		}
-
-		//check to see if requested attendance exists
-		const requested = await Attendance.findOne({
-			where: {
-				userId: userId,
-				eventId: eventId
+			//check if event exist AND grab groupId
+			const event = await Event.findByPk(eventId);
+			if (!event) {
+				const err = new Error("Event couldn't be found");
+				err.status = 404;
+				return next(err);
 			}
-		})
-		if (!requested) {
-			const err = new Error(
-				"Attendance between the user and the event does not exist"
-			);
-			err.status = 404;
-			return next(err);
-		}
 
-		if (isOrganizer || isUserMember) {
-			await requested.destroy();
-			return res.json({
-				message: "Successfully deleted attendance from event",
+			//check if user is organizer
+			const roles = await User.scope({
+				method: ["isOrganizerOrCoHost", user.id, event.groupId],
+			}).findOne();
+			if (roles.Groups.length >= 1) {
+				isOrganizer = true;
+			}
+
+			//check if user is the user whose membership is being deleted
+			if (user.id == userId) {
+				isUserMember = true;
+			}
+
+			//check to see if user exists
+			const userToBeUpdated = await User.findByPk(userId);
+			if (!userToBeUpdated) {
+				const err = new Error("User couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if requested attendance exists
+			const requested = await Attendance.findOne({
+				where: {
+					userId: userId,
+					eventId: eventId,
+				},
 			});
-		} else {
-			const err = new Error("Forbidden");
-			err.status = 403;
-			return next(err);
-		}
+			if (!requested) {
+				const err = new Error(
+					"Attendance between the user and the event does not exist"
+				);
+				err.status = 404;
+				return next(err);
+			}
 
-	} catch (err) {
-		next(err)
+			if (isOrganizer || isUserMember) {
+				await requested.destroy();
+				return res.json({
+					message: "Successfully deleted attendance from event",
+				});
+			} else {
+				const err = new Error("Forbidden");
+				err.status = 403;
+				return next(err);
+			}
+		} catch (err) {
+			next(err);
+		}
 	}
-})
+);
 
 //Change the status of an attendance for an event specified by id
-router.put("/:eventId/attendance", requireAuth, validateAttendanceUpdate, async (req, res, next) => {
-	try {
-		const { user } = req;
-		const eventId = req.params.eventId;
-		const { userId, status } = req.body;
+router.put(
+	"/:eventId/attendance",
+	requireAuth,
+	validateAttendanceUpdate,
+	async (req, res, next) => {
+		try {
+			const { user } = req;
+			const eventId = req.params.eventId;
+			const { userId, status } = req.body;
 
-		let isOrganizer = false;
-		let isCoHost = false;
+			let isOrganizer = false;
+			let isCoHost = false;
 
-		//check if event exist AND grab groupId
-		const event = await Event.findByPk(eventId);
-		if (!event) {
-			const err = new Error("Event couldn't be found");
-			err.status = 404;
-			return next(err);
-		}
-
-		//check if user is organizer or co-host
-		const roles = await User.scope({
-			method: ["isOrganizerOrCoHost", user.id, event.groupId],
-		}).findOne();
-
-		if (roles.Groups.length >= 1) {
-			isOrganizer = true;
-		}
-
-		if (roles.Memberships.length >= 1) {
-			isCoHost = true;
-		}
-
-		//check to see if user exists
-		const userToBeUpdated = await User.findByPk(userId);
-		if (!userToBeUpdated) {
-			const err = new Error("User couldn't be found");
-			err.status = 404;
-			return next(err);
-		}
-
-		//check to see if requested attendance exists
-		const requested = await Attendance.findOne({
-			where: {
-				userId: userId,
-				eventId: eventId
+			//check if event exist AND grab groupId
+			const event = await Event.findByPk(eventId);
+			if (!event) {
+				const err = new Error("Event couldn't be found");
+				err.status = 404;
+				return next(err);
 			}
-		})
-		if (!requested) {
-			const err = new Error(
-				"Attendance between the user and the event does not exist"
-			);
-			err.status = 404;
-			return next(err);
+
+			//check if user is organizer or co-host
+			const roles = await User.scope({
+				method: ["isOrganizerOrCoHost", user.id, event.groupId],
+			}).findOne();
+
+			if (roles.Groups.length >= 1) {
+				isOrganizer = true;
+			}
+
+			if (roles.Memberships.length >= 1) {
+				isCoHost = true;
+			}
+
+			//check to see if user exists
+			const userToBeUpdated = await User.findByPk(userId);
+			if (!userToBeUpdated) {
+				const err = new Error("User couldn't be found");
+				err.status = 404;
+				return next(err);
+			}
+
+			//check to see if requested attendance exists
+			const requested = await Attendance.findOne({
+				where: {
+					userId: userId,
+					eventId: eventId,
+				},
+			});
+			if (!requested) {
+				const err = new Error(
+					"Attendance between the user and the event does not exist"
+				);
+				err.status = 404;
+				return next(err);
+			}
+
+			if (isOrganizer || isCoHost) {
+				await requested.update({
+					status,
+				});
+			} else {
+				const err = new Error("Forbidden");
+				err.status = 403;
+				return next(err);
+			}
+
+			return res.json({
+				id: requested.id,
+				eventId: requested.eventId,
+				userId: requested.userId,
+				status: requested.status,
+			});
+		} catch (err) {
+			next(err);
 		}
-
-		if(isOrganizer || isCoHost){
-			await requested.update({
-				status
-			})
-		} else {
-			const err = new Error("Forbidden");
-			err.status = 403;
-			return next(err);
-		}
-
-		return res.json({
-			id: requested.id,
-			eventId: requested.eventId,
-			userId: requested.userId,
-			status: requested.status
-		})
-
-	} catch (err) {
-		next(err)
 	}
-})
+);
 
 //Request to Attend an Event based on the Event's id
 router.post("/:eventId/attendance", requireAuth, async (req, res, next) => {
@@ -421,9 +432,9 @@ router.get("/:eventId", async (req, res, next) => {
 });
 
 //Get all events
-router.get("/", async (req, res, next) => {
+router.get("/", validateQueryParams, async (req, res, next) => {
 	try {
-		const events = await Event.getAllEvents();
+		const events = await Event.getAllEvents(req.query);
 
 		res.json({
 			Events: events,

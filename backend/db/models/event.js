@@ -22,8 +22,46 @@ module.exports = (sequelize, DataTypes) => {
 			});
 		}
 
-		static async getAllEvents() {
+		static async getAllEvents(params) {
+			let { page, size, name, type, startDate } = params;
+
+			page = +page;
+			size = +size;
+
+			if (Number.isNaN(page) || page <= 0) page = 1;
+			if (Number.isNaN(size) || size <= 0) size = 20;
+
+			if (size > 20) size = 20;
+			if (page > 10) page = 10;
+
+			const where = {};
+
+			if (name && name !== "") {
+				where.name = name;
+			}
+
+			if (type && type !== "") {
+				where.type = type;
+			}
+
+			if (startDate && startDate !== "") {
+				where.startDate = startDate;
+			}
+
 			const allEvents = await Event.findAll({
+				subQuery: false,
+				attributes: [
+					"id",
+					"groupId",
+					"venueId",
+					"name",
+					"type",
+					"startDate",
+					"endDate",
+				],
+				where,
+				limit: size,
+				offset: (page - 1) * size,
 				include: [
 					{
 						model: sequelize.models.Group,
@@ -59,18 +97,12 @@ module.exports = (sequelize, DataTypes) => {
 						required: false,
 					},
 				],
-				attributes: [
-					"id",
-					"groupId",
-					"venueId",
-					"name",
-					"type",
-					"startDate",
-					"endDate",
-				],
+
 				group: ["Event.id", "Group.id", "Venue.id", "Event_Images.id"],
 				raw: true,
 			});
+
+			console.log(allEvents);
 
 			const events = Event.organizeEvents(allEvents);
 
@@ -190,16 +222,16 @@ module.exports = (sequelize, DataTypes) => {
 				],
 			});
 
-      const numAttending = await sequelize.models.Attendance.count({
+			const numAttending = await sequelize.models.Attendance.count({
 				where: {
 					eventId: eventId,
-					status: 'attending',
+					status: "attending",
 				},
 			});
 
 			event.numAttending = numAttending;
 
-      const result = Event.organizeEvent(event)
+			const result = Event.organizeEvent(event);
 			return result;
 		}
 
@@ -209,16 +241,16 @@ module.exports = (sequelize, DataTypes) => {
 				groupId: obj.groupId,
 				venueId: obj.venueId,
 				name: obj.name,
-        description: obj.description,
+				description: obj.description,
 				type: obj.type,
-        capacity: obj.capacity,
-        price: obj.price,
+				capacity: obj.capacity,
+				price: obj.price,
 				startDate: obj.startDate,
 				endDate: obj.endDate,
 				numAttending: obj.numAttending,
-        Group: obj.Group,
-        Venue: obj.Venue,
-        EventImages: obj.Event_Images
+				Group: obj.Group,
+				Venue: obj.Venue,
+				EventImages: obj.Event_Images,
 			};
 		}
 	}
@@ -232,7 +264,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			description: DataTypes.STRING,
 			type: {
-				type: DataTypes.ENUM("Online", "In Person"),
+				type: DataTypes.ENUM("Online", "In person"),
 				allowNull: false,
 			},
 			capacity: DataTypes.INTEGER,

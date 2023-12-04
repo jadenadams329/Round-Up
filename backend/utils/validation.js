@@ -85,10 +85,10 @@ const validateSignup = [
 		.isLength({ min: 4 })
 		.withMessage("Username is required"),
 	check("username").not().isEmail().withMessage("Username cannot be an email."),
-	check("password")
-		.exists({ checkFalsy: true })
-		.isLength({ min: 6 })
-		.withMessage("Password must be 6 characters or more."),
+	// check("password")
+	// 	.exists({ checkFalsy: true })
+	// 	.isLength({ min: 6 })
+	// 	.withMessage("Password must be 6 characters or more."),
 	handleValidationErrors,
 ];
 
@@ -138,7 +138,13 @@ const validateEvent = [
 		.withMessage("Capacity must be an integer"),
 	check("price")
 		.isFloat()
-		.withMessage("Price is invalid"),
+		.withMessage("Price is invalid")
+		.custom((value) => {
+			if(value < 0){
+				throw new Error("Price is invalid")
+			}
+			return true
+		}),
 	check("description")
 		.exists({ checkFalsy: true })
 		.notEmpty()
@@ -166,6 +172,30 @@ const validateEvent = [
 	handleValidationErrors
 ]
 
+const validateQueryParams = [
+	check("page")
+		.optional({ checkFalsy: true })
+		.isInt({min: 1})
+		.withMessage("Page must be greater than or equal to 1"),
+	check("size")
+		.optional({ checkFalsy: true })
+		.isInt({min: 1})
+		.withMessage("Size must be greater than or equal to 1"),
+	check("name")
+		.optional({ checkFalsy: true })
+		.isString()
+		.withMessage("Name must be a string"),
+	check("type")
+		.optional({ checkFalsy: true })
+		.isIn(["In person", "Online"])
+		.withMessage("Type must be 'Online' or 'In Person'"),
+	check("startDate")
+		.optional({ checkFalsy: true })
+		.isDate()
+		.withMessage("Start date must be a valid datetime"),
+	handleValidationErrors
+]
+
 module.exports = {
 	handleValidationErrors,
 	validateGroupBody,
@@ -174,5 +204,6 @@ module.exports = {
 	validateVenue,
 	validateEvent,
 	validateMembershipUpdate,
-	validateAttendanceUpdate
+	validateAttendanceUpdate,
+	validateQueryParams
 };
