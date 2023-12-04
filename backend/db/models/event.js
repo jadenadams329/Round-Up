@@ -264,7 +264,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			description: DataTypes.STRING,
 			type: {
-				type: DataTypes.ENUM("Online", "In Person"),
+				type: DataTypes.ENUM("Online", "In person"),
 				allowNull: false,
 			},
 			capacity: DataTypes.INTEGER,

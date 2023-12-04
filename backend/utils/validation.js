@@ -131,7 +131,7 @@ const validateEvent = [
 		.isLength({ min: 4 })
 		.withMessage("Name must be at least 5 characters"),
 	check("type")
-		.isIn(["In Person", "Online"])
+		.isIn(["In person", "Online"])
 		.withMessage("Type must be Online or In person"),
 	check("capacity")
 		.isInt()
@@ -187,7 +187,7 @@ const validateQueryParams = [
 		.withMessage("Name must be a string"),
 	check("type")
 		.optional({ checkFalsy: true })
-		.isIn(["In Person", "Online"])
+		.isIn(["In person", "Online"])
 		.withMessage("Type must be 'Online' or 'In Person'"),
 	check("startDate")
 		.optional({ checkFalsy: true })
