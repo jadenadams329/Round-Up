@@ -85,10 +85,10 @@ const validateSignup = [
 		.isLength({ min: 4 })
 		.withMessage("Username is required"),
 	check("username").not().isEmail().withMessage("Username cannot be an email."),
-	check("password")
-		.exists({ checkFalsy: true })
-		.isLength({ min: 6 })
-		.withMessage("Password must be 6 characters or more."),
+	// check("password")
+	// 	.exists({ checkFalsy: true })
+	// 	.isLength({ min: 6 })
+	// 	.withMessage("Password must be 6 characters or more."),
 	handleValidationErrors,
 ];
 
@@ -138,7 +138,13 @@ const validateEvent = [
 		.withMessage("Capacity must be an integer"),
 	check("price")
 		.isFloat()
-		.withMessage("Price is invalid"),
+		.withMessage("Price is invalid")
+		.custom((value) => {
+			if(value < 0){
+				throw new Error("Price is invalid")
+			}
+			return true
+		}),
 	check("description")
 		.exists({ checkFalsy: true })
 		.notEmpty()
