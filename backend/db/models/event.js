@@ -74,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
 					{
 						model: sequelize.models.Attendance,
 						where: {
-							status: "attending",
+							status: ["attending", "host", "co-host"]
 						},
 						attributes: [
 							[
@@ -126,7 +126,7 @@ module.exports = (sequelize, DataTypes) => {
 					{
 						model: sequelize.models.Attendance,
 						where: {
-							status: "attending",
+							status: ["attending", "host", "co-host"]
 						},
 						attributes: [
 							[
@@ -169,6 +169,12 @@ module.exports = (sequelize, DataTypes) => {
 
 		static organizeEvents(result) {
 			const events = result.map((event) => {
+				if(!Number.isInteger(event.numAttending)){
+					console.log("Converting numAttending into int")
+					event.numAttending = parseInt(event.numAttending)
+				} else {
+					console.log("numAttending is an int")
+				}
 				let venue = {
 					id: event["Venue.id"],
 					city: event["Venue.city"],
@@ -225,11 +231,19 @@ module.exports = (sequelize, DataTypes) => {
 			const numAttending = await sequelize.models.Attendance.count({
 				where: {
 					eventId: eventId,
-					status: "attending",
+					status: ["attending", "host", "co-host"]
 				},
 			});
 
-			event.numAttending = numAttending;
+			if(!Number.isInteger(numAttending)){
+				console.log("Converting numAttending into int")
+				event.numAttending = parseInt(numAttending)
+			} else {
+				console.log("numAttending is an int")
+				event.numAttending = numAttending;
+			}
+
+
 
 			const result = Event.organizeEvent(event);
 			return result;
