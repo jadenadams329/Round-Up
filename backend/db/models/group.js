@@ -138,6 +138,12 @@ module.exports = (sequelize, DataTypes) => {
 		}
 
 		static organizeGroupById(result) {
+			if(!Number.isInteger(result.numMembers)){
+				console.log("Converting numMembers into int")
+				result.numMembers = parseInt(result.numMembers)
+			} else {
+				console.log("numMembers is an int")
+			}
 			let group = {
 				id: result.id,
 				organizerId: result.organizerId,
@@ -151,7 +157,7 @@ module.exports = (sequelize, DataTypes) => {
 				updatedAt: result.updatedAt,
 				numMembers: result.numMembers,
 				GroupImages: result.Group_Images,
-				Organzier: result.User,
+				Organizer: result.User,
 				Venues: result.Venues,
 			};
 			return group;
@@ -159,6 +165,12 @@ module.exports = (sequelize, DataTypes) => {
 
 		static organizeGroupDetails(result) {
 			const groups = result.map((group) => {
+				if(!Number.isInteger(group.numMembers)){
+					console.log("Converting numMembers into int")
+					group.numMembers = parseInt(group.numMembers)
+				} else {
+					console.log("numMembers is an int")
+				}
 				return {
 					id: group.id,
 					organizerId: group.organizerId,
