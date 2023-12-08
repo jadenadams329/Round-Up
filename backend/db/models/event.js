@@ -169,9 +169,9 @@ module.exports = (sequelize, DataTypes) => {
 
 		static organizeEvents(result) {
 			const events = result.map((event) => {
-				if(!Number.isInteger(event.numAttending)){
-					console.log("Converting numAttending into int")
-					event.numAttending = parseInt(event.numAttending)
+				if(!Number.isInteger(event['Attendances.numAttending'])){
+					console.log("numAttending was a string, converting to int...")
+					event['Attendances.numAttending'] = parseInt(event['Attendances.numAttending'])
 				} else {
 					console.log("numAttending is an int")
 				}
