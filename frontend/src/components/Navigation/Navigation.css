@@ -1,0 +1,8 @@
+.profile-dropdown {
+    /* Styles for when the menu is visible */
+  }
+
+  .profile-dropdown.hidden {
+    display: none;
+    /* Additional styles for when the menu is hidden */
+  }
