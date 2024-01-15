@@ -38,8 +38,9 @@ function SignupFormModal() {
 			validationErrors["firstName"] = "*First Name is required";
 		if (validator.isEmpty(lastName))
 			validationErrors["lastName"] = "*Last Name is required";
-    if(password.length <= 5)
-      validationErrors["passwordLength"]="*Password should contain at least 6 characters"
+		if (password.length <= 5)
+			validationErrors["passwordLength"] =
+				"*Password should contain at least 6 characters";
 		if (!validator.equals(password, confirmPassword))
 			validationErrors["passwordMatch"] = "*Passwords must match";
 		setErrors(validationErrors);
@@ -80,117 +81,125 @@ function SignupFormModal() {
 		<>
 			<h1>Sign Up</h1>
 			<form onSubmit={handleSubmit}>
-				<label>
+				<div className='form'>
 					<input
+						className='modal-input'
 						type='text'
 						placeholder='Email'
 						value={email}
 						onChange={(e) => {
-							setEmail(e.target.value), setUserInteraction(prevState => ({
-                ...prevState,
-                email: true,
-              }));
+							setEmail(e.target.value),
+								setUserInteraction((prevState) => ({
+									...prevState,
+									email: true,
+								}));
 						}}
 						required
 					/>
-				</label>
-				{errors.isEmail && userInteraction.email && (
-					<p className='error'>{errors.isEmail}</p>
-				)}
-				{errors.email && (
-					<p className='error'>{`*${errors.email}`}</p>
-				)}
-				<label>
+
+					{errors.isEmail && userInteraction.email && (
+						<p className='error'>{errors.isEmail}</p>
+					)}
+					{errors.email && <p className='error'>{`*${errors.email}`}</p>}
+
 					<input
+						className='modal-input'
 						type='text'
 						placeholder='Username'
 						value={username}
 						onChange={(e) => {
 							setUsername(e.target.value),
-              setUserInteraction(prevState => ({
-                ...prevState,
-                username: true,
-              }));
+								setUserInteraction((prevState) => ({
+									...prevState,
+									username: true,
+								}));
 						}}
 						required
 					/>
-				</label>
-				{errors.usernameLength && userInteraction.username && (
-					<p className='error'>{errors.usernameLength}</p>
-				)}
-				{errors.username && <p className='error'>{`*${errors.username}`}</p>}
-				<label>
+
+					{errors.usernameLength && userInteraction.username && (
+						<p className='error'>{errors.usernameLength}</p>
+					)}
+					{errors.username && <p className='error'>{`*${errors.username}`}</p>}
+
 					<input
+						className='modal-input'
 						type='text'
 						placeholder='First Name'
 						value={firstName}
 						onChange={(e) => {
 							setFirstName(e.target.value),
-              setUserInteraction(prevState => ({
-                ...prevState,
-                firstName: true,
-              }));
+								setUserInteraction((prevState) => ({
+									...prevState,
+									firstName: true,
+								}));
 						}}
 						required
 					/>
-				</label>
-				{errors.firstName && userInteraction.firstName && (
-					<p className='error'>{errors.firstName}</p>
-				)}
-				<label>
+
+					{errors.firstName && userInteraction.firstName && (
+						<p className='error'>{errors.firstName}</p>
+					)}
+
 					<input
+						className='modal-input'
 						type='text'
 						placeholder='Last Name'
 						value={lastName}
 						onChange={(e) => {
 							setLastName(e.target.value),
-              setUserInteraction(prevState => ({
-                ...prevState,
-                lastName: true,
-              }));
+								setUserInteraction((prevState) => ({
+									...prevState,
+									lastName: true,
+								}));
 						}}
 						required
 					/>
-				</label>
-				{errors.lastName && userInteraction.lastName && (
-					<p className='error'>{errors.lastName}</p>
-				)}
-				<label>
+
+					{errors.lastName && userInteraction.lastName && (
+						<p className='error'>{errors.lastName}</p>
+					)}
+
 					<input
+						className='modal-input'
 						type='password'
 						placeholder='Password'
 						value={password}
-						onChange={(e) => {setPassword(e.target.value), setUserInteraction(prevState => ({
-              ...prevState,
-              password: true,
-            }));
-          }}
+						onChange={(e) => {
+							setPassword(e.target.value),
+								setUserInteraction((prevState) => ({
+									...prevState,
+									password: true,
+								}));
+						}}
 						required
 					/>
-				</label>
-        {errors.passwordLength && userInteraction.password && (
-					<p className='error'>{errors.passwordLength}</p>
-				)}
-				<label>
+
+					{errors.passwordLength && userInteraction.password && (
+						<p className='error'>{errors.passwordLength}</p>
+					)}
+
 					<input
+						className='modal-input'
 						type='password'
 						placeholder='Confirm Password'
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
 						required
 					/>
-				</label>
-				{errors.passwordMatch && (
-					<p className='error'>{errors.passwordMatch}</p>
-				)}
 
-				<button
-					disabled={submitDisabled}
-					className='modal-button'
-					type='submit'
-				>
-					Sign Up
-				</button>
+					{errors.passwordMatch && (
+						<p className='error'>{errors.passwordMatch}</p>
+					)}
+
+					<button
+						disabled={submitDisabled}
+						className='modal-button'
+						type='submit'
+					>
+						Sign Up
+					</button>
+				</div>
 			</form>
 		</>
 	);

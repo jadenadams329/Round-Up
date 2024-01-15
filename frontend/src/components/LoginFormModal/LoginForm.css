@@ -1,0 +1,9 @@
+.register, .login {
+    border-radius: 5px;
+    box-shadow: 2px 9px 49px -17px rgba(0, 0, 0, 0.1);
+    height: auto;
+    max-width: 400px;
+    padding: 40px 15px;
+    text-align: center;
+    width: 100%;
+}

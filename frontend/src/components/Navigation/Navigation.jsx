@@ -5,6 +5,7 @@ import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import LoginFormModal from "../LoginFormModal/LoginFormModal";
 import SignupFormModal from "../SignupFormModal/SignupFormModal";
 import "./Navigation.css";
+import logo from "../images/logo.png";
 
 function Navigation({ isLoaded }) {
 	const sessionUser = useSelector((state) => state.session.user);
@@ -12,23 +13,25 @@ function Navigation({ isLoaded }) {
 	let sessionLinks;
 	if (sessionUser) {
 		sessionLinks = (
-			<li>
+			<li className='navListItem' id='profileButton'>
 				<ProfileButton user={sessionUser} />
 			</li>
 		);
 	} else {
 		sessionLinks = (
 			<>
-				<li>
+				<li className='navListItem' id='signUp'>
 					<OpenModalButton
-						buttonText='Log In'
-						modalComponent={<LoginFormModal />}
-					/>
-				</li>
-				<li>
-					<OpenModalButton
+						className='modalButton'
 						buttonText='Sign Up'
 						modalComponent={<SignupFormModal />}
+					/>
+				</li>
+				<li className='navListItem' id='signIn'>
+					<OpenModalButton
+						className='modalButton'
+						buttonText='Log In'
+						modalComponent={<LoginFormModal />}
 					/>
 				</li>
 			</>
@@ -36,12 +39,18 @@ function Navigation({ isLoaded }) {
 	}
 
 	return (
-		<ul>
-			<li>
-				<NavLink to='/'>Home</NavLink>
-			</li>
-			{isLoaded && sessionLinks}
-		</ul>
+		<nav>
+			<ul className='navList'>
+				<li className='navListItem'>
+					<NavLink to='/'>
+						<a>
+							<img className='logo' src={logo}></img>
+						</a>
+					</NavLink>
+				</li>
+				{isLoaded && sessionLinks}
+			</ul>
+		</nav>
 	);
 }
 

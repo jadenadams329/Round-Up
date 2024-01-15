@@ -10,20 +10,21 @@ function LoginFormModal() {
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState({});
 	const { closeModal } = useModal();
-  let submitDisabled = true;
+	let submitDisabled = true;
 
-  useEffect(() => {
+	useEffect(() => {
 		const validationErrors = {};
 
 		if (credential.length <= 3)
 			validationErrors["usernameLength"] =
 				"*Username must be 4 or more characters";
-    if(password.length <= 5)
-      validationErrors["passwordLength"]="*Password should contain at least 6 characters"
+		if (password.length <= 5)
+			validationErrors["passwordLength"] =
+				"*Password should contain at least 6 characters";
 		setErrors(validationErrors);
 	}, [credential, password]);
 
-  submitDisabled = Object.values(errors).length === 0 ? false : true;
+	submitDisabled = Object.values(errors).length === 0 ? false : true;
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -41,29 +42,35 @@ function LoginFormModal() {
 	return (
 		<>
 			<h1>Log In</h1>
-			{errors.message && <p className="error">{errors.message}</p>}
+			{errors.message && <p className='error'>{errors.message}</p>}
 			<form onSubmit={handleSubmit}>
+				<div className='form'>
+					<input
+            className="modal-input"
+						type='text'
+						placeholder='Username or Email'
+						value={credential}
+						onChange={(e) => setCredential(e.target.value)}
+						required
+					/>
 
-					<label>
-						<input
-							type='text'
-							placeholder='Username or Email'
-							value={credential}
-							onChange={(e) => setCredential(e.target.value)}
-							required
-						/>
-					</label>
-					<label>
-						<input
-							type='password'
-							placeholder='Password'
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							required
-						/>
-					</label>
+					<input
+          className="modal-input"
+						type='password'
+						placeholder='Password'
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
+						required
+					/>
 
-				<button disabled={submitDisabled} className="modal-button" type='submit'>Log In</button>
+					<button
+						disabled={submitDisabled}
+						className='modal-button'
+						type='submit'
+					>
+						Log In
+					</button>
+				</div>
 			</form>
 		</>
 	);
