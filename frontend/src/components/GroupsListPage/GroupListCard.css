@@ -1,0 +1,39 @@
+.glcContainer{
+    display: flex;
+    flex-wrap: wrap;
+    border-top: 1px solid lightgray;
+    padding: 10px 0 10px 0;
+    gap: 10px;
+}
+
+.glcImg{
+    width: 200px;
+}
+
+.glcImg > img{
+    width: 200px;
+    height: 156px;
+}
+
+.glcInfo {
+    display: flex;
+    flex-direction: column;
+    height: 156px;
+    justify-content: space-between;
+    flex-basis: 60%;
+
+}
+
+.glcLocation{
+    font-size: 14px;
+}
+
+.glcAbout {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.glcSpan{
+    font-size: 14px;
+    color: gray;
+}

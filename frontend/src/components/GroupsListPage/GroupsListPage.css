@@ -1,0 +1,45 @@
+
+.glpGridContainer {
+    display: flex;
+    margin-top: 50px;
+}
+.glpCol{
+    width: 20%;
+}
+.glpMenuContainer{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.glpMenu {
+    display: flex;
+    justify-content: left;
+    gap: 30px;
+}
+
+.glpMenuP{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: gray;
+}
+
+.glpCardLink{
+    text-decoration: none;
+    color: black;
+}
+
+.glpMenuActive{
+    color: #00525E;
+    text-decoration: underline;
+}
+
+.glpMenuEvents{
+    text-decoration: none;
+    color: #999999;
+}
+.glpMenuEvents:hover{
+    text-decoration: underline;
+    color: black;
+}

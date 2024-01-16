@@ -10,7 +10,8 @@
 }
 
 #modal-content {
-	position: relative;
+	position: fixed;
+  top: 100px;
 	background-color: white;
 	padding: 20px;
 	border-radius: 10px;
@@ -68,5 +69,5 @@
 	right: 0;
 	left: 0;
 	bottom: 0;
-	background-color: rgba(234, 234, 234, 0.7);
+	background-color: rgba(92, 92, 92, 0.883);
 }
