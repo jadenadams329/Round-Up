@@ -1,24 +1,72 @@
+* {
+	box-sizing: border-box;
+
+}
+
 #modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 
-  #modal-background {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-  }
+#modal-content {
+	position: relative;
+	background-color: white;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 2px 9px 49px -17px rgba(0, 0, 0, 0.1);
+	max-width: 400px; /* Adjust the max-width value to make the modal bigger */
+  width: 100%; /* Ensure the modal takes full width */
+}
 
-  #modal-content {
-    position: absolute;
-    background-color: white;
-  }
+#modal-content > h1{
+  text-align: center;
+  margin: 0;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+}
+
+.modal-input {
+  width: 100%;
+	margin-top: 8px;
+	padding: 8px;
+}
+
+.modal-button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #FF5A5F;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+.modal-button:disabled {
+  background-color: #ffacae; /* Change the background color for disabled state */
+  color: #ffffff; /* Change the text color for disabled state */
+  cursor: not-allowed; /* Change the cursor for disabled state */
+}
+
+.error{
+  color: red;
+  margin: 0;
+  font-size: small;
+  text-align: left !important;
+}
+
+#modal-background {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	background-color: rgba(234, 234, 234, 0.7);
+}
