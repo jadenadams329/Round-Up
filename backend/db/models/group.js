@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 
 		static async getAllGroups() {
-			const result = await Group.findAll({
+			const result = await sequelize.models.Group.findAll({
 				attributes: [
 					"id",
 					"organizerId",
@@ -38,29 +38,19 @@ module.exports = (sequelize, DataTypes) => {
 					"createdAt",
 					"updatedAt",
 					[
-						sequelize.fn("COUNT", sequelize.literal('DISTINCT Memberships.id')),
+						sequelize.literal(
+							"(SELECT COUNT(*) FROM Memberships WHERE Memberships.groupId = `Group`.id)"
+						),
 						"numMembers",
 					],
 					[
-						sequelize.fn("COUNT", sequelize.literal('DISTINCT Events.id')),
+						sequelize.literal(
+							"(SELECT COUNT(*) FROM Events WHERE Events.groupId = `Group`.id)"
+						),
 						"numEvents",
-					]
+					],
 				],
 				include: [
-					{
-						model: sequelize.models.Membership,
-						where: {
-							status: ["member", "co-host"],
-						},
-						attributes: [],
-						required: false,
-					},
-					{
-						model: sequelize.models.Event,
-						attributes: [],
-						required: false
-
-					},
 					{
 						model: sequelize.models.Group_Image,
 						where: { preview: true },
@@ -68,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
 						required: false,
 					},
 				],
-				group: ["Group.id", "Group_Images.url"],
+				group: ["`Group`.id"],
 				raw: true,
 			});
 			const groups = Group.organizeGroupDetails(result);
@@ -146,11 +136,11 @@ module.exports = (sequelize, DataTypes) => {
 		}
 
 		static organizeGroupById(result) {
-			if(!Number.isInteger(result.numMembers)){
-				console.log("Converting numMembers into int")
-				result.numMembers = parseInt(result.numMembers)
+			if (!Number.isInteger(result.numMembers)) {
+				console.log("Converting numMembers into int");
+				result.numMembers = parseInt(result.numMembers);
 			} else {
-				console.log("numMembers is an int")
+				console.log("numMembers is an int");
 			}
 			let group = {
 				id: result.id,
@@ -173,11 +163,11 @@ module.exports = (sequelize, DataTypes) => {
 
 		static organizeGroupDetails(result) {
 			const groups = result.map((group) => {
-				if(!Number.isInteger(group.numMembers)){
-					console.log("Converting numMembers into int")
-					group.numMembers = parseInt(group.numMembers)
+				if (!Number.isInteger(group.numMembers)) {
+					console.log("Converting numMembers into int");
+					group.numMembers = parseInt(group.numMembers);
 				} else {
-					console.log("numMembers is an int")
+					console.log("numMembers is an int");
 				}
 				return {
 					id: group.id,
