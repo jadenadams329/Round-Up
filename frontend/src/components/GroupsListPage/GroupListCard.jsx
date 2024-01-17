@@ -3,7 +3,7 @@ import "./GroupListCard.css";
 function GroupListCard({ group }) {
 	const noImgUrl =
 		"https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png?20200912122019";
-	return (
+        return (
 		<>
 			<div className='glcContainer'>
 				<div className='glcImg'>
@@ -15,7 +15,7 @@ function GroupListCard({ group }) {
 						<span className="glcSpan">{`${group.city}, ${group.state}`}</span>
 					</div>
 					<p className="glcAbout">{group.about}</p>
-					<span className='glcSpan'>{`${
+					<span className='glcSpan'>{`${group.numEvents} events - ${
 						group.private ? "Private" : "Public"
 					}`}</span>
 				</div>

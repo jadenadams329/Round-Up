@@ -30,7 +30,6 @@ function GroupsListPage() {
                         <Link key={group.id} className="glpCardLink" to={`/groups/${group.id}`}><GroupListCard group={group} key={group.id}/></Link>
                     ))}
 				</div>
-
                 <div className='glpCol'></div>
 			</div>
 		</>
