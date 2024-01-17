@@ -37,14 +37,8 @@ module.exports = (sequelize, DataTypes) => {
 					"state",
 					"createdAt",
 					"updatedAt",
-					[
-						sequelize.fn("COUNT", sequelize.literal("DISTINCT Memberships.id")),
-						"numMembers",
-					],
-					[
-						sequelize.fn("COUNT", sequelize.literal("DISTINCT Events.id")),
-						"numEvents",
-					],
+					[sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('Memberships.id'))), 'numMembers'],
+					[sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('Events.id'))), 'numEvents'],
 				],
 				include: [
 					{
@@ -53,12 +47,12 @@ module.exports = (sequelize, DataTypes) => {
 							status: ["member", "co-host"],
 						},
 						attributes: [],
-						required: true,
+						required: false,
 					},
 					{
 						model: sequelize.models.Event,
 						attributes: [],
-						required: true,
+						required: false,
 					},
 					{
 						model: sequelize.models.Group_Image,
