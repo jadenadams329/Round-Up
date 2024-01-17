@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 
 		static async getAllGroups() {
-			const result = await sequelize.models.Group.findAll({
+			const result = await Group.findAll({
 				attributes: [
 					"id",
 					"organizerId",
@@ -38,19 +38,28 @@ module.exports = (sequelize, DataTypes) => {
 					"createdAt",
 					"updatedAt",
 					[
-						sequelize.literal(
-							"(SELECT COUNT(*) FROM Memberships WHERE Memberships.groupId = `Group`.id)"
-						),
+						sequelize.fn("COUNT", sequelize.literal("DISTINCT Memberships.id")),
 						"numMembers",
 					],
 					[
-						sequelize.literal(
-							"(SELECT COUNT(*) FROM Events WHERE Events.groupId = `Group`.id)"
-						),
+						sequelize.fn("COUNT", sequelize.literal("DISTINCT Events.id")),
 						"numEvents",
 					],
 				],
 				include: [
+					{
+						model: sequelize.models.Membership,
+						where: {
+							status: ["member", "co-host"],
+						},
+						attributes: [],
+						required: true,
+					},
+					{
+						model: sequelize.models.Event,
+						attributes: [],
+						required: true,
+					},
 					{
 						model: sequelize.models.Group_Image,
 						where: { preview: true },
@@ -58,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
 						required: false,
 					},
 				],
-				group: ["`Group`.id"],
+				group: ["Group.id"],
 				raw: true,
 			});
 			const groups = Group.organizeGroupDetails(result);
