@@ -38,9 +38,13 @@ module.exports = (sequelize, DataTypes) => {
 					"createdAt",
 					"updatedAt",
 					[
-						sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+						sequelize.fn("COUNT", sequelize.literal('DISTINCT Memberships.id')),
 						"numMembers",
 					],
+					[
+						sequelize.fn("COUNT", sequelize.literal('DISTINCT Events.id')),
+						"numEvents",
+					]
 				],
 				include: [
 					{
@@ -52,6 +56,12 @@ module.exports = (sequelize, DataTypes) => {
 						required: false,
 					},
 					{
+						model: sequelize.models.Event,
+						attributes: [],
+						required: false
+
+					},
+					{
 						model: sequelize.models.Group_Image,
 						where: { preview: true },
 						attributes: ["url"],
@@ -61,9 +71,7 @@ module.exports = (sequelize, DataTypes) => {
 				group: ["Group.id", "Group_Images.url"],
 				raw: true,
 			});
-
 			const groups = Group.organizeGroupDetails(result);
-
 			return groups;
 		}
 
@@ -183,6 +191,7 @@ module.exports = (sequelize, DataTypes) => {
 					createdAt: group.createdAt,
 					updatedAt: group.updatedAt,
 					numMembers: group.numMembers,
+					numEvents: group.numEvents,
 					previewImage: group["Group_Images.url"],
 				};
 			});

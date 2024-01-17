@@ -59,6 +59,7 @@
 }
 .lpBottomLink:hover{
     color: #008599;
+	text-decoration: underline;
 }
 .lpButtonDiv {
 	display: flex;
