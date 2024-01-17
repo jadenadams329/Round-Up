@@ -23,12 +23,13 @@ export const getAllGroups = () => async (dispatch) => {
 const initialState = {};
 const groupsReducer = (state = initialState, action) => {
 	switch (action.type) {
-		case LOAD_GROUPS:
+		case LOAD_GROUPS: {
 			const groupsState = {};
 			action.payload.forEach((group) => {
 				groupsState[group.id] = group;
 			});
 			return groupsState;
+		}
 
 		default:
 			return state;
