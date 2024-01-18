@@ -1,5 +1,4 @@
 import { csrfFetch } from "./csrf";
-import groupsReducer from "./groups";
 
 /** Action Type Constants: */
 export const LOAD_EVENTS = "events/LOAD_EVENTS";

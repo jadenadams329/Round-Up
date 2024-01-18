@@ -12,7 +12,7 @@ function GroupEventCard({ event }) {
 
 	useEffect(() => {
 		dispatch(getEvent(id));
-	}, [dispatch]);
+	}, [dispatch, id]);
 	return (
 		<>
 			<div>
