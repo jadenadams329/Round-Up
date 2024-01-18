@@ -13,6 +13,7 @@
 .glcImg > img{
     width: 234px;
     height: 156px;
+    object-fit: cover;
 }
 
 .glcInfo {

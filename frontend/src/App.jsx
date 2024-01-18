@@ -5,6 +5,7 @@ import Navigation from './components/Navigation/Navigation';
 import * as sessionActions from './store/session';
 import LandingPage from './components/LandingPage/LandingPage';
 import GroupsListPage from './components/GroupsListPage/GroupsListPage';
+import GroupDetailsPage from './components/GroupDetailsPage/GroupDetailsPage';
 
 function Layout() {
   const dispatch = useDispatch();
@@ -30,11 +31,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <LandingPage></LandingPage>
+        element: <LandingPage/>
       },
       {
         path: '/groups',
-        element: <GroupsListPage></GroupsListPage>
+        element: <GroupsListPage/>
+      },
+      {
+        path: '/groups/:id',
+        element: <GroupDetailsPage/>
       }
     ]
   }
