@@ -29,20 +29,12 @@ function SignupFormModal() {
 
 	useEffect(() => {
 		const validationErrors = {};
-		if (!validator.isEmail(email))
-			validationErrors["isEmail"] = "*Please enter a valid email";
-		if (username.length <= 3)
-			validationErrors["usernameLength"] =
-				"*Username must be 4 or more characters";
-		if (validator.isEmpty(firstName))
-			validationErrors["firstName"] = "*First Name is required";
-		if (validator.isEmpty(lastName))
-			validationErrors["lastName"] = "*Last Name is required";
-		if (password.length <= 5)
-			validationErrors["passwordLength"] =
-				"*Password should contain at least 6 characters";
-		if (!validator.equals(password, confirmPassword))
-			validationErrors["passwordMatch"] = "*Passwords must match";
+		if (!validator.isEmail(email)) validationErrors["isEmail"] = "*Please enter a valid email";
+		if (username.length <= 3) validationErrors["usernameLength"] = "*Username must be 4 or more characters";
+		if (validator.isEmpty(firstName)) validationErrors["firstName"] = "*First Name is required";
+		if (validator.isEmpty(lastName)) validationErrors["lastName"] = "*Last Name is required";
+		if (password.length <= 5) validationErrors["passwordLength"] = "*Password should contain at least 6 characters";
+		if (!validator.equals(password, confirmPassword)) validationErrors["passwordMatch"] = "*Passwords must match";
 		setErrors(validationErrors);
 	}, [email, username, firstName, lastName, password, confirmPassword]);
 
@@ -70,8 +62,7 @@ function SignupFormModal() {
 				});
 		}
 		return setErrors({
-			confirmPassword:
-				"Confirm Password field must be the same as the Password field",
+			confirmPassword: "Confirm Password field must be the same as the Password field",
 		});
 	};
 
@@ -97,9 +88,7 @@ function SignupFormModal() {
 						required
 					/>
 
-					{errors.isEmail && userInteraction.email && (
-						<p className='error'>{errors.isEmail}</p>
-					)}
+					{errors.isEmail && userInteraction.email && <p className='error'>{errors.isEmail}</p>}
 					{errors.email && <p className='error'>{`*${errors.email}`}</p>}
 
 					<input
@@ -117,9 +106,7 @@ function SignupFormModal() {
 						required
 					/>
 
-					{errors.usernameLength && userInteraction.username && (
-						<p className='error'>{errors.usernameLength}</p>
-					)}
+					{errors.usernameLength && userInteraction.username && <p className='error'>{errors.usernameLength}</p>}
 					{errors.username && <p className='error'>{`*${errors.username}`}</p>}
 
 					<input
@@ -137,9 +124,7 @@ function SignupFormModal() {
 						required
 					/>
 
-					{errors.firstName && userInteraction.firstName && (
-						<p className='error'>{errors.firstName}</p>
-					)}
+					{errors.firstName && userInteraction.firstName && <p className='error'>{errors.firstName}</p>}
 
 					<input
 						className='modal-input'
@@ -156,9 +141,7 @@ function SignupFormModal() {
 						required
 					/>
 
-					{errors.lastName && userInteraction.lastName && (
-						<p className='error'>{errors.lastName}</p>
-					)}
+					{errors.lastName && userInteraction.lastName && <p className='error'>{errors.lastName}</p>}
 
 					<input
 						className='modal-input'
@@ -175,9 +158,7 @@ function SignupFormModal() {
 						required
 					/>
 
-					{errors.passwordLength && userInteraction.password && (
-						<p className='error'>{errors.passwordLength}</p>
-					)}
+					{errors.passwordLength && userInteraction.password && <p className='error'>{errors.passwordLength}</p>}
 
 					<input
 						className='modal-input'
@@ -188,15 +169,9 @@ function SignupFormModal() {
 						required
 					/>
 
-					{errors.passwordMatch && (
-						<p className='error'>{errors.passwordMatch}</p>
-					)}
+					{errors.passwordMatch && <p className='error'>{errors.passwordMatch}</p>}
 
-					<button
-						disabled={submitDisabled}
-						className='modal-button'
-						type='submit'
-					>
+					<button disabled={submitDisabled} className='modal-button' type='submit'>
 						Sign Up
 					</button>
 				</div>

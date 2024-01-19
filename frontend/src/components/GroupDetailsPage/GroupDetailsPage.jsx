@@ -87,6 +87,12 @@ function GroupDetailsPage() {
 						</>
 					)}
 
+					{upcomingEvents.length === 0 && (
+						<>
+							<h3>No Upcoming Events</h3>
+						</>
+					)}
+
 					{pastEvents.length > 0 && (
 						<>
 							<h3>Past Events ({pastEvents.length})</h3>

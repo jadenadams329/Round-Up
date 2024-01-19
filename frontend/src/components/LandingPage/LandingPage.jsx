@@ -38,7 +38,7 @@ function LandingPage() {
                 </div>
                 <div className="lpBottomDiv">
                     <img src={landingPageThree} className="lpBottomImg" ></img>
-                    <Link className="lpBottomLink">Start a new group</Link>
+                    <Link to={'/groups/new'}className="lpBottomLink">Start a new group</Link>
 
                 </div>
             </div>

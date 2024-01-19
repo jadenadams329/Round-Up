@@ -3,7 +3,8 @@ import { csrfFetch } from "./csrf";
 /** Action Type Constants: */
 export const LOAD_GROUPS = "groups/LOAD_GROUPS";
 export const RECEIVE_GROUP = "groups/RECEIVE_GROUP";
-export const RECEIVE_GROUP_EVENTS = "groups/RECEIVE_GROUP_EVENTS"
+export const RECEIVE_GROUP_EVENTS = "groups/RECEIVE_GROUP_EVENTS";
+export const ADD_GROUP = "groups/ADD_GROUP";
 
 /**  Action Creators: */
 export const loadGroups = (groups) => ({
@@ -18,8 +19,13 @@ export const receiveGroup = (group) => ({
 
 export const receiveGroupEvents = (events) => ({
 	type: RECEIVE_GROUP_EVENTS,
-	payload: events.Events
-})
+	payload: events.Events,
+});
+
+export const createGroup = (group) => ({
+	type: ADD_GROUP,
+	group,
+});
 
 /** Thunk Action Creators: */
 export const getAllGroups = () => async (dispatch) => {
@@ -40,23 +46,38 @@ export const getGroup = (groupId) => async (dispatch) => {
 	}
 };
 
-export const getGroupEvents = (groupId) => async dispatch => {
-	const res = await csrfFetch(`/api/groups/${groupId}/events`)
-	if(res.ok){
+export const getGroupEvents = (groupId) => async (dispatch) => {
+	const res = await csrfFetch(`/api/groups/${groupId}/events`);
+	if (res.ok) {
 		const data = await res.json();
 		dispatch(receiveGroupEvents(data));
-		return data
+		return data;
 	}
-}
+};
+
+export const addGroup = (data) => async (dispatch) => {
+	const res = await csrfFetch("/api/groups", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data),
+	});
+
+	if (res.ok) {
+		const group = await res.json();
+		dispatch(createGroup(group))
+		return group
+	}
+};
 
 /** Reducer: */
 const initialState = {
 	groupInfo: {},
-	groupEvents: {}
+	groupEvents: {},
 };
 const groupsReducer = (state = initialState, action) => {
 	switch (action.type) {
-
 		case LOAD_GROUPS: {
 			const groupsState = {};
 			action.payload.forEach((group) => {
@@ -69,12 +90,15 @@ const groupsReducer = (state = initialState, action) => {
 			return { ...state, groupInfo: { ...state.groupInfo, [action.group.id]: action.group } };
 
 		case RECEIVE_GROUP_EVENTS: {
-			const groupEventsState = {}
+			const groupEventsState = {};
 			action.payload.forEach((event) => {
-				groupEventsState[event.id] = event
-			})
-			return { ...state, groupEvents: groupEventsState }
+				groupEventsState[event.id] = event;
+			});
+			return { ...state, groupEvents: groupEventsState };
 		}
+
+		case ADD_GROUP:
+			return { ...state, groupInfo: { ...state.groupInfo, [action.group.id]: action.group }};
 
 		default:
 			return state;
