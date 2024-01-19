@@ -7,7 +7,7 @@ import "./GroupsListPage.css";
 
 function GroupsListPage() {
 	const dispatch = useDispatch();
-	const groups = useSelector((state) => state.groups);
+	const groups = useSelector((state) => state.groups.groupInfo);
 	const groupsList = Object.values(groups);
 
 	useEffect(() => {

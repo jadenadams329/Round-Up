@@ -4,8 +4,12 @@ import landingPageThree from "../images/landing-page-3.jpg";
 import landingPageFour from "../images/landing-page-4.jpg"
 import "./LandingPage.css";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function LandingPage() {
+    const sessionUser = useSelector((state) => state.session.user);
+    let groupLinkClass = 'lpBottomLink'
+    sessionUser ? groupLinkClass : groupLinkClass = 'lpBottomLinkDisabled'
 	return (
 		<>
 			<div className='lpContainerTop'>
@@ -38,7 +42,7 @@ function LandingPage() {
                 </div>
                 <div className="lpBottomDiv">
                     <img src={landingPageThree} className="lpBottomImg" ></img>
-                    <Link className="lpBottomLink">Start a new group</Link>
+                    <Link to={'/groups/new'}className={groupLinkClass}>Start a new group</Link>
 
                 </div>
             </div>

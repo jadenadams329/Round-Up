@@ -61,6 +61,13 @@
     color: #008599;
 	text-decoration: underline;
 }
+.lpBottomLinkDisabled {
+	margin-top: 15px;
+    font-size: 14pt;
+    color: lightgray;
+    text-decoration: none;
+	pointer-events: none;
+}
 .lpButtonDiv {
 	display: flex;
 	justify-content: center;
