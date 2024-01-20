@@ -5,6 +5,7 @@ export const LOAD_GROUPS = "groups/LOAD_GROUPS";
 export const RECEIVE_GROUP = "groups/RECEIVE_GROUP";
 export const RECEIVE_GROUP_EVENTS = "groups/RECEIVE_GROUP_EVENTS";
 export const ADD_GROUP = "groups/ADD_GROUP";
+export const UPDATE_GROUP = "groups/UPDATE_GROUP";
 
 /**  Action Creators: */
 export const loadGroups = (groups) => ({
@@ -24,6 +25,11 @@ export const receiveGroupEvents = (events) => ({
 
 export const createGroup = (group) => ({
 	type: ADD_GROUP,
+	group,
+});
+
+export const editGroup = (group) => ({
+	type: UPDATE_GROUP,
 	group,
 });
 
@@ -66,8 +72,25 @@ export const addGroup = (data) => async (dispatch) => {
 
 	if (res.ok) {
 		const group = await res.json();
-		dispatch(createGroup(group))
-		return group
+		dispatch(createGroup(group));
+		return group;
+	}
+};
+
+export const updateGroup = (groupId, data) => async (dispatch) => {
+	console.log(data)
+	const res = await csrfFetch(`/api/groups/${groupId}`, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data),
+	});
+	
+	if (res.ok) {
+		const group = await res.json();
+		dispatch(editGroup(group));
+		return group;
 	}
 };
 
@@ -98,7 +121,10 @@ const groupsReducer = (state = initialState, action) => {
 		}
 
 		case ADD_GROUP:
-			return { ...state, groupInfo: { ...state.groupInfo, [action.group.id]: action.group }};
+			return { ...state, groupInfo: { ...state.groupInfo, [action.group.id]: action.group } };
+
+		case UPDATE_GROUP:
+			return { ...state, groupInfo: { ...state.groupInfo, [action.group.id]: action.group } };
 
 		default:
 			return state;
