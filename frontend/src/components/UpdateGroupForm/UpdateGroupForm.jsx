@@ -11,7 +11,7 @@ function UpdateGroupForm() {
 	let previewImg = group?.GroupImages?.find((img) => img.preview);
 
 	const handleIncomingLocation = (city, state) => {
-		let cityState = `${city}, ${state}`;
+		let cityState = `${city},${state}`;
 		return cityState;
 	};
 

@@ -5,6 +5,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { getGroup, getGroupEvents } from "../../store/groups";
 import GroupEventCard from "./GroupEventCard";
 import moment from "moment";
+import DeleteGroupModal from "../DeleteGroupModal/DeleteGroupModal";
+import OpenModalButton from "../OpenModalButton/OpenModalButton";
+
+
 
 function GroupDetailsPage() {
 	const noImgUrl = "https://t4.ftcdn.net/jpg/05/17/53/57/240_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg";
@@ -21,16 +25,20 @@ function GroupDetailsPage() {
 	const pastEvents = eventList.filter((event) => moment(event.endDate).isBefore(Today));
 	let groupButtons;
 
-	const handleUpdateClick = () => {
-		navigate(`/groups/${id}/edit`)
+	const callNavigate = () => {
+		return navigate('/groups')
 	}
+
+	const handleUpdateClick = () => {
+		navigate(`/groups/${id}/edit`);
+	};
 
 	if (sessionUser && group && sessionUser.id === group.organizerId) {
 		groupButtons = (
 			<>
 				<button>Create event</button>
 				<button onClick={handleUpdateClick}>Update</button>
-				<button>Delete</button>
+				<OpenModalButton className='modalButton' buttonText='Delete' modalComponent={<DeleteGroupModal groupId={id} navigate={callNavigate}/>} />
 			</>
 		);
 	} else {
@@ -40,7 +48,6 @@ function GroupDetailsPage() {
 			</>
 		);
 	}
-
 
 	useEffect(() => {
 		dispatch(getGroup(id));

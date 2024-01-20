@@ -6,6 +6,7 @@ export const RECEIVE_GROUP = "groups/RECEIVE_GROUP";
 export const RECEIVE_GROUP_EVENTS = "groups/RECEIVE_GROUP_EVENTS";
 export const ADD_GROUP = "groups/ADD_GROUP";
 export const UPDATE_GROUP = "groups/UPDATE_GROUP";
+export const REMOVE_GROUP = "groups/REMOVE_GROUP";
 
 /**  Action Creators: */
 export const loadGroups = (groups) => ({
@@ -31,6 +32,11 @@ export const createGroup = (group) => ({
 export const editGroup = (group) => ({
 	type: UPDATE_GROUP,
 	group,
+});
+
+export const removeGroup = (groupId) => ({
+	type: RECEIVE_GROUP,
+	groupId,
 });
 
 /** Thunk Action Creators: */
@@ -78,7 +84,6 @@ export const addGroup = (data) => async (dispatch) => {
 };
 
 export const updateGroup = (groupId, data) => async (dispatch) => {
-	console.log(data)
 	const res = await csrfFetch(`/api/groups/${groupId}`, {
 		method: "PUT",
 		headers: {
@@ -86,11 +91,20 @@ export const updateGroup = (groupId, data) => async (dispatch) => {
 		},
 		body: JSON.stringify(data),
 	});
-	
+
 	if (res.ok) {
 		const group = await res.json();
 		dispatch(editGroup(group));
 		return group;
+	}
+};
+
+export const deleteGroup = (groupId) => async (dispatch) => {
+	const res = await csrfFetch(`/api/groups/${groupId}`, {
+		method: "DELETE",
+	});
+	if (res.ok) {
+		dispatch(receiveGroup(groupId));
 	}
 };
 
@@ -125,6 +139,12 @@ const groupsReducer = (state = initialState, action) => {
 
 		case UPDATE_GROUP:
 			return { ...state, groupInfo: { ...state.groupInfo, [action.group.id]: action.group } };
+
+		case REMOVE_GROUP: {
+			const newState = {...state}
+			delete newState.groupInfo[action.groupId]
+			return newState
+		}
 
 		default:
 			return state;
