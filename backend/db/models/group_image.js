@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
 	class Group_Image extends Model {
 		/**
@@ -27,5 +27,20 @@ module.exports = (sequelize, DataTypes) => {
 			modelName: "Group_Image",
 		}
 	);
+
+	Group_Image.addHook("afterCreate", async (groupImage, options) => {
+		if (groupImage.preview) {
+			await Group_Image.update(
+				{ preview: false },
+				{
+					where: {
+						groupId: groupImage.groupId,
+						id: { [Op.ne]: groupImage.id },
+						preview: true,
+					},
+				}
+			);
+		}
+	});
 	return Group_Image;
 };

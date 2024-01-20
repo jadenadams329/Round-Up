@@ -1,42 +1,53 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import validator from "validator";
-import { addGroup } from "../../store/groups";
+import { useNavigate, useParams } from "react-router-dom";
+import { updateGroup } from "../../store/groups";
 import { addImage } from "../../store/groupImages";
-import { useNavigate } from "react-router-dom";
 
-function CreateGroupForm() {
-	const [location, setLocation] = useState("");
-	const [name, setName] = useState("");
-	const [about, setAbout] = useState("");
-	const [privacy, setPrivacy] = useState("");
-	const [type, setType] = useState("");
-	const [imgUrl, setImgUrl] = useState("");
-	const [errors, setErrors] = useState({});
-	const [hasSubmitted, setHasSubmitted] = useState(false);
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
+function UpdateGroupForm() {
+	const { id } = useParams();
+	const group = useSelector((state) => state.groups.groupInfo[id]);
+	let previewImg = group?.GroupImages?.find((img) => img.preview);
 
-	let hasErrors = Object.values(errors).length === 0 ? false : true;
+	const handleIncomingLocation = (city, state) => {
+		let cityState = `${city}, ${state}`;
+		return cityState;
+	};
 
 	const handleLocation = (location) => {
 		let cityState = location.split(",");
 		return cityState;
 	};
 
+	const [location, setLocation] = useState(handleIncomingLocation(group?.city, group?.state));
+	const [name, setName] = useState(group?.name);
+	const [about, setAbout] = useState(group?.about);
+	const [privacy, setPrivacy] = useState(group?.private ? "Private" : "Public");
+	const [type, setType] = useState(group?.type);
+	const [imgUrl, setImgUrl] = useState(previewImg?.url ? previewImg.url : "");
+	const [errors, setErrors] = useState({});
+	const [hasSubmitted, setHasSubmitted] = useState(false);
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	let hasErrors = Object.values(errors).length === 0 ? false : true;
+
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		setHasSubmitted(true);
-		console.log(imgUrl);
 		const isPrivate = privacy === "Private";
 		if (!hasErrors) {
 			const [city, state] = handleLocation(location);
 			const createGroup = { name, about, type, private: isPrivate, city, state };
 			const createImage = { url: imgUrl, preview: true };
 			try {
-				const group = await dispatch(addGroup(createGroup));
-				await dispatch(addImage(group.id, createImage));
-				resetForm();
+				const group = await dispatch(updateGroup(id, createGroup));
+				if (previewImg.url !== imgUrl) {
+					await dispatch(addImage(group.id, createImage));
+				}
+				setHasSubmitted(false);
+				hasErrors = false;
 				navigate(`/groups/${group.id}`);
 			} catch (res) {
 				const data = await res.json();
@@ -45,17 +56,6 @@ function CreateGroupForm() {
 				}
 			}
 		}
-	};
-
-	const resetForm = () => {
-		setName("");
-		setLocation("");
-		setAbout("");
-		setType("");
-		setPrivacy("");
-		setImgUrl("");
-		setHasSubmitted(false);
-		hasErrors = false;
 	};
 
 	useEffect(() => {
@@ -70,14 +70,13 @@ function CreateGroupForm() {
 		if (!(imgUrl.endsWith(".png") || imgUrl.endsWith(".jpg") || imgUrl.endsWith(".jpeg")))
 			validationErrors["imgUrl"] = "Image URL must end with .png, .jpg, or .jpeg";
 		setErrors(validationErrors);
-		console.log(imgUrl);
-	}, [location, name, about, privacy, type, imgUrl]);
+	}, [location, name, about, privacy, type, imgUrl, dispatch, id]);
 
 	return (
 		<>
 			<form onSubmit={onSubmit}>
 				<div>
-					<h4>BECOME AN ORGANIZER</h4>
+					<h4>UPDATE YOUR GROUPS INFORMATION</h4>
 					<h2>We&apos;ll walk you through a few steps to build your local community</h2>
 				</div>
 				<div>
@@ -158,11 +157,11 @@ function CreateGroupForm() {
 					{errors.imgUrl && hasSubmitted && <p>{errors.imgUrl}</p>}
 				</div>
 				<div>
-					<button type='submit'>Create group</button>
+					<button type='submit'>Update group</button>
 				</div>
 			</form>
 		</>
 	);
 }
 
-export default CreateGroupForm;
+export default UpdateGroupForm;

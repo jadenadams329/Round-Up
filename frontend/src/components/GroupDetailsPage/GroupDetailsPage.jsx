@@ -1,5 +1,5 @@
 import "./GroupDetailsPage.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getGroup, getGroupEvents } from "../../store/groups";
@@ -10,8 +10,8 @@ function GroupDetailsPage() {
 	const noImgUrl = "https://t4.ftcdn.net/jpg/05/17/53/57/240_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg";
 	let imgFound = false;
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const { id } = useParams();
-
 	const group = useSelector((state) => state.groups.groupInfo[id]);
 	const events = useSelector((state) => state.groups.groupEvents);
 	const sessionUser = useSelector((state) => state.session.user);
@@ -20,11 +20,16 @@ function GroupDetailsPage() {
 	const upcomingEvents = eventList.filter((event) => moment(event.startDate).isSameOrAfter(Today));
 	const pastEvents = eventList.filter((event) => moment(event.endDate).isBefore(Today));
 	let groupButtons;
+
+	const handleUpdateClick = () => {
+		navigate(`/groups/${id}/edit`)
+	}
+
 	if (sessionUser && group && sessionUser.id === group.organizerId) {
 		groupButtons = (
 			<>
 				<button>Create event</button>
-				<button>Update</button>
+				<button onClick={handleUpdateClick}>Update</button>
 				<button>Delete</button>
 			</>
 		);
@@ -35,6 +40,7 @@ function GroupDetailsPage() {
 			</>
 		);
 	}
+
 
 	useEffect(() => {
 		dispatch(getGroup(id));
