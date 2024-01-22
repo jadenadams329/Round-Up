@@ -2,7 +2,7 @@ import { useModal } from "../../context/Modal";
 import { useDispatch } from "react-redux";
 import { deleteGroup } from "../../store/groups";
 import { useState } from "react";
-
+import "./DeleteGroupModal.css";
 
 function DeleteGroupModal({ groupId, navigate }) {
 	const { closeModal } = useModal();
@@ -11,26 +11,32 @@ function DeleteGroupModal({ groupId, navigate }) {
 
 	const handleDelete = async (e) => {
 		e.preventDefault();
-        setErrors({});
+		setErrors({});
 		try {
 			dispatch(deleteGroup(groupId));
 			closeModal();
-			navigate()
+			navigate();
 		} catch (res) {
 			const data = await res.json();
 			if (data) {
 				setErrors(data);
 			}
-            console.log(errors)
+			console.log(errors);
 		}
 	};
 
 	return (
 		<>
-			<h2>Confirm Delete</h2>
-			<p>Are you sure you want to remove this group?</p>
-			<button onClick={handleDelete}>Yes (Delete Group) </button>
-			<button onClick={closeModal}>No (Keep Group) </button>
+			<div className="dgmContainer">
+				<div className="dgmInfo">
+					<h2>Confirm Delete</h2>
+					<p>Are you sure you want to remove this group?</p>
+				</div>
+				<div className="dgmButtons">
+					<button className="dgmButtonTop" onClick={handleDelete}>Yes (Delete Group) </button>
+					<button className="dgmButtonBottom" onClick={closeModal}>No (Keep Group) </button>
+				</div>
+			</div>
 		</>
 	);
 }

@@ -74,92 +74,100 @@ function UpdateGroupForm() {
 
 	return (
 		<>
-			<form onSubmit={onSubmit}>
-				<div>
-					<h4>UPDATE YOUR GROUPS INFORMATION</h4>
-					<h2>We&apos;ll walk you through a few steps to build your local community</h2>
-				</div>
-				<div>
-					<h2>First, set your group&apos;s location</h2>
-					<p>
-						Meetup groups meet locally, in person and online. We&apos;ll connect you with people in your area, and more
-						can join you online.
-					</p>
-					<input
-						type='text'
-						onChange={(e) => setLocation(e.target.value)}
-						value={location}
-						placeholder='City, STATE'
-						name='location'
-					></input>
-					{errors.location && hasSubmitted && <p>{errors.location}</p>}
-					{errors.locationFormat && hasSubmitted && <p>{errors.locationFormat}</p>}
-				</div>
-				<div>
-					<h2>What will your group&apos;s name be?</h2>
-					<p>
-						Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You
-						can edit this later if you change your mind.
-					</p>
-					<input
-						type='text'
-						onChange={(e) => setName(e.target.value)}
-						value={name}
-						placeholder="What is your group's name?"
-						name='name'
-					></input>
-					{errors.name && hasSubmitted && <p>{errors.name}</p>}
-				</div>
-				<div>
-					<h2>Now describe what your group will be about</h2>
-					<p>People will see this when we promote your group, but you&apos;ll be able to add to it later, too.</p>
-					<ol>
-						<li>What&apos;s the purpose of the group?</li>
-						<li>Who should join?</li>
-						<li>What will you do at your events?</li>
-					</ol>
-					<textarea
-						rows='10'
-						onChange={(e) => setAbout(e.target.value)}
-						value={about}
-						name='about'
-						placeholder='Please write at least 30 characters'
-					></textarea>
-					{errors.about && hasSubmitted && <p>{errors.about}</p>}
-				</div>
-				<div>
-					<h2>Final steps...</h2>
-					<p>Is this an in person or online group?</p>
-					<select onChange={(e) => setType(e.target.value)} value={type}>
-						<option disabled value={""}>
-							(select one)
-						</option>
-						<option value={"In person"}>In person</option>
-						<option value={"Online"}>Online</option>
-					</select>
-					{errors.type && hasSubmitted && <p>{errors.type}</p>}
-					<p>Is this group private or public?</p>
-					<select onChange={(e) => setPrivacy(e.target.value)} value={privacy}>
-						<option disabled value={""}>
-							(select one)
-						</option>
-						<option value={"Private"}>Private</option>
-						<option value={"Public"}>Public</option>
-					</select>
-					{errors.privacy && hasSubmitted && <p>{errors.privacy}</p>}
-					<p>Please add in image url for your group below:</p>
-					<input
-						type='text'
-						placeholder='https://somewhere.com/image.png'
-						value={imgUrl}
-						onChange={(e) => setImgUrl(e.target.value)}
-					></input>
-					{errors.imgUrl && hasSubmitted && <p>{errors.imgUrl}</p>}
-				</div>
-				<div>
-					<button type='submit'>Update group</button>
-				</div>
-			</form>
+			<div className='cgFormContainer'>
+				<div></div>
+				<form onSubmit={onSubmit}>
+					<div div className='cgTop'>
+						<h4>UPDATE YOUR GROUPS INFORMATION</h4>
+						<h2>We&apos;ll walk you through a few steps to build your local community</h2>
+					</div>
+					<div className='cgLocation'>
+						<h2>First, set your group&apos;s location</h2>
+						<p>
+							Meetup groups meet locally, in person and online. We&apos;ll connect you with people in your area, and
+							more can join you online.
+						</p>
+						<input
+							type='text'
+							onChange={(e) => setLocation(e.target.value)}
+							value={location}
+							placeholder='City, STATE'
+							name='location'
+						></input>
+						{errors.location && hasSubmitted && <p className='cgError'>{errors.location}</p>}
+						{errors.locationFormat && hasSubmitted && <p className='cgError'>{errors.locationFormat}</p>}
+					</div>
+					<div className='cgName'>
+						<h2>What will your group&apos;s name be?</h2>
+						<p>
+							Choose a name that will give people a clear idea of what the group is about. Feel free to get creative!
+							You can edit this later if you change your mind.
+						</p>
+						<input
+							type='text'
+							onChange={(e) => setName(e.target.value)}
+							value={name}
+							placeholder="What is your group's name?"
+							name='name'
+						></input>
+						{errors.name && hasSubmitted && <p className='cgError'>{errors.name}</p>}
+					</div>
+					<div div className='cgAbout'>
+						<h2>Now describe what your group will be about</h2>
+						<p>People will see this when we promote your group, but you&apos;ll be able to add to it later, too.</p>
+						<ol>
+							<li>What&apos;s the purpose of the group?</li>
+							<li>Who should join?</li>
+							<li>What will you do at your events?</li>
+						</ol>
+						<textarea
+							rows='10'
+							onChange={(e) => setAbout(e.target.value)}
+							value={about}
+							name='about'
+							placeholder='Please write at least 30 characters'
+						></textarea>
+						{errors.about && hasSubmitted && <p className='cgError'>{errors.about}</p>}
+					</div>
+					<div div className='cgBottom'>
+						<h2>Final steps...</h2>
+						<p>Is this an in person or online group?</p>
+						<div className='cgSelect'>
+							<select onChange={(e) => setType(e.target.value)} value={type}>
+								<option disabled value={""}>
+									(select one)
+								</option>
+								<option value={"In person"}>In person</option>
+								<option value={"Online"}>Online</option>
+							</select>
+							{errors.type && hasSubmitted && <p className='cgError'>{errors.type}</p>}
+						</div>
+						<p>Is this group private or public?</p>
+						<div className='cgSelect'>
+							<select onChange={(e) => setPrivacy(e.target.value)} value={privacy}>
+								<option disabled value={""}>
+									(select one)
+								</option>
+								<option value={"Private"}>Private</option>
+								<option value={"Public"}>Public</option>
+							</select>
+							{errors.privacy && hasSubmitted && <p className='cgError'>{errors.privacy}</p>}
+						</div>
+						<p>Please add in image url for your group below:</p>
+						<input
+							type='text'
+							placeholder='https://somewhere.com/image.png'
+							value={imgUrl}
+							onChange={(e) => setImgUrl(e.target.value)}
+						></input>
+						{errors.imgUrl && hasSubmitted && <p className='cgError'>{errors.imgUrl}</p>}
+					</div>
+					<div className='cgButton'>
+						<button type='submit'>Update group</button>
+					</div>
+				</form>
+				<div></div>
+			</div>
 		</>
 	);
 }

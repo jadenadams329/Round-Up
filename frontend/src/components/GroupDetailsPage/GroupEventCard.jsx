@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getEvent } from "../../store/events";
+import './GroupEventCard.css'
 
 function GroupEventCard({ event }) {
 	const noImgUrl =
@@ -15,10 +16,10 @@ function GroupEventCard({ event }) {
 	}, [dispatch, id]);
 	return (
 		<>
-			<div>
-				<div>
+			<div className="gecContainer">
+				<div className="gecTop">
 					<img src={noImgUrl}></img>
-					<div>
+					<div className="gecTopRight">
 						<h5>{startDate}</h5>
 						<h4>{eventDetails && eventDetails.name}</h4>
 						<span>

@@ -1,0 +1,41 @@
+.dgmContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.dgmInfo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+.dgmButtons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+}
+.dgmButtonTop{
+    width: 100%;
+    padding: 10px 0;
+    background-color: #FF5A5F;
+    color: white;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+.dgmButtonTop:hover{
+    background-color: #FF787C;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+}
+.dgmButtonBottom{
+    width: 100%;
+    padding: 10px 0;
+    background-color: #454545;
+    color: white;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+.dgmButtonBottom:hover{
+    background-color: #5E5E5E;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); 
+}

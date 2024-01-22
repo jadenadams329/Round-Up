@@ -8,8 +8,6 @@ import moment from "moment";
 import DeleteGroupModal from "../DeleteGroupModal/DeleteGroupModal";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
 
-
-
 function GroupDetailsPage() {
 	const noImgUrl = "https://t4.ftcdn.net/jpg/05/17/53/57/240_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg";
 	let imgFound = false;
@@ -26,8 +24,8 @@ function GroupDetailsPage() {
 	let groupButtons;
 
 	const callNavigate = () => {
-		return navigate('/groups')
-	}
+		return navigate("/groups");
+	};
 
 	const handleUpdateClick = () => {
 		navigate(`/groups/${id}/edit`);
@@ -36,15 +34,21 @@ function GroupDetailsPage() {
 	if (sessionUser && group && sessionUser.id === group.organizerId) {
 		groupButtons = (
 			<>
-				<button>Create event</button>
-				<button onClick={handleUpdateClick}>Update</button>
-				<OpenModalButton className='modalButton' buttonText='Delete' modalComponent={<DeleteGroupModal groupId={id} navigate={callNavigate}/>} />
+				<button className='gdpButtons'>Create event</button>
+				<button className='gdpButtons' onClick={handleUpdateClick}>
+					Update
+				</button>
+				<OpenModalButton
+					cssClass={"gdpButtons"}
+					buttonText='Delete'
+					modalComponent={<DeleteGroupModal groupId={id} navigate={callNavigate} />}
+				/>
 			</>
 		);
 	} else {
 		groupButtons = (
 			<>
-				<button>Join Group</button>
+				<button className='gdpButtons'>Join this group</button>
 			</>
 		);
 	}
@@ -57,9 +61,10 @@ function GroupDetailsPage() {
 	return (
 		<>
 			<div className='gdpContainer'>
+				<div></div>
 				<div className='gdpTopSection'>
 					<div className='gdpTopLeft'>
-						<Link to={"/groups"}>{`< Groups`}</Link>
+						<Link className='gdpGroupLink' to={"/groups"}>{`< Groups`}</Link>
 						{group &&
 							group.GroupImages &&
 							group.GroupImages.map((image) => {
@@ -87,38 +92,51 @@ function GroupDetailsPage() {
 									: null}
 							</span>
 						</div>
-						<div>{groupButtons}</div>
+						<div className='gdpButtonsDiv'>{groupButtons}</div>
 					</div>
 				</div>
+				<div></div>
+
+				<div className='gdpBottomSection'></div>
 				<div className='gdpBottomSection'>
-					<h3>Organizer</h3>
-					<p>{group && group.Organizer ? `${group.Organizer.firstName} ${group.Organizer.lastName}` : null}</p>
-					<h3>What we&apos;re about</h3>
-					<p>{group && group.about}</p>
-					{upcomingEvents.length > 0 && (
-						<>
-							<h3>Upcoming Events ({upcomingEvents.length})</h3>
-							{upcomingEvents.map((event) => (
-								<GroupEventCard key={event.id} event={event} />
-							))}
-						</>
-					)}
+					<div className='gdpBSContent'>
+						<div className='gdpOrganzier'>
+							<h3>Organizer</h3>
+							<p>{group && group.Organizer ? `${group.Organizer.firstName} ${group.Organizer.lastName}` : null}</p>
+						</div>
+						<div className='gdpAbout'>
+							<h3>What we&apos;re about</h3>
+							<p>{group && group.about}</p>
+						</div>
+						<div className='gdpUEvents'>
+							{upcomingEvents.length > 0 && (
+								<>
+									<h3>Upcoming Events ({upcomingEvents.length})</h3>
+									{upcomingEvents.map((event) => (
+										<GroupEventCard key={event.id} event={event} />
+									))}
+								</>
+							)}
 
-					{upcomingEvents.length === 0 && (
-						<>
-							<h3>No Upcoming Events</h3>
-						</>
-					)}
-
-					{pastEvents.length > 0 && (
-						<>
-							<h3>Past Events ({pastEvents.length})</h3>
-							{pastEvents.map((event) => (
-								<GroupEventCard key={event.id} event={event} />
-							))}
-						</>
-					)}
+							{upcomingEvents.length === 0 && (
+								<>
+									<h3>No Upcoming Events</h3>
+								</>
+							)}
+						</div>
+						<div className="gpdPEvents">
+							{pastEvents.length > 0 && (
+								<>
+									<h3>Past Events ({pastEvents.length})</h3>
+									{pastEvents.map((event) => (
+										<GroupEventCard key={event.id} event={event} />
+									))}
+								</>
+							)}
+						</div>
+					</div>
 				</div>
+				<div className='gdpBottomSection'></div>
 			</div>
 		</>
 	);
