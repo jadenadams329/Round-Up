@@ -22,14 +22,14 @@ function Navigation({ isLoaded }) {
 			<>
 				<li className='navListItem' id='signUp'>
 					<OpenModalButton
-						className='modalButton'
+						cssClass={'modalButton'}
 						buttonText='Sign Up'
 						modalComponent={<SignupFormModal />}
 					/>
 				</li>
 				<li className='navListItem' id='signIn'>
 					<OpenModalButton
-						className='modalButton'
+						cssClass={'modalButton'}
 						buttonText='Log In'
 						modalComponent={<LoginFormModal />}
 					/>
