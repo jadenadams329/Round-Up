@@ -77,7 +77,7 @@ function UpdateGroupForm() {
 			<div className='cgFormContainer'>
 				<div></div>
 				<form onSubmit={onSubmit}>
-					<div div className='cgTop'>
+					<div className='cgTop'>
 						<h4>UPDATE YOUR GROUPS INFORMATION</h4>
 						<h2>We&apos;ll walk you through a few steps to build your local community</h2>
 					</div>
@@ -112,7 +112,7 @@ function UpdateGroupForm() {
 						></input>
 						{errors.name && hasSubmitted && <p className='cgError'>{errors.name}</p>}
 					</div>
-					<div div className='cgAbout'>
+					<div className='cgAbout'>
 						<h2>Now describe what your group will be about</h2>
 						<p>People will see this when we promote your group, but you&apos;ll be able to add to it later, too.</p>
 						<ol>
@@ -129,7 +129,7 @@ function UpdateGroupForm() {
 						></textarea>
 						{errors.about && hasSubmitted && <p className='cgError'>{errors.about}</p>}
 					</div>
-					<div div className='cgBottom'>
+					<div className='cgBottom'>
 						<h2>Final steps...</h2>
 						<p>Is this an in person or online group?</p>
 						<div className='cgSelect'>
