@@ -35,11 +35,10 @@ export const getEvent = (eventId) => async (dispatch) => {
 };
 
 /** Reducer: */
-const initialState = {}
+const initialState = {};
 
 const eventsReducer = (state = initialState, action) => {
 	switch (action.type) {
-
 		case LOAD_EVENTS: {
 			const eventsState = {};
 			action.payload.forEach((event) => {
@@ -51,9 +50,9 @@ const eventsReducer = (state = initialState, action) => {
 		case RECEIVE_EVENT:
 			return { ...state, [action.event.id]: action.event };
 
-        default:
-            return state;
-    }
-}
+		default:
+			return state;
+	}
+};
 
 export default eventsReducer;

@@ -17,7 +17,7 @@ function GroupListCard({ group }) {
 					<p className='glcAbout'>{group.about}</p>
 					<span className='glcSpan'>{`${group.numEvents} ${
 						group.numEvents === 1 ? "event" : "events"
-					} - ${group.private ? "Private" : "Public"}`}</span>
+					} · ${group.private ? "Private" : "Public"}`}</span>
 				</div>
 			</div>
 		</>

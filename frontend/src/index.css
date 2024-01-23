@@ -3,3 +3,9 @@
     font-family: 'Montserrat', sans-serif;
     margin: 0;
 }
+
+#spinner{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

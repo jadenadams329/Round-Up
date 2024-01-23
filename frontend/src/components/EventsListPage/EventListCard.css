@@ -1,0 +1,24 @@
+.elcContainer{
+    display: flex;
+    flex-wrap: wrap;
+	flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid lightgray;
+    padding: 10px 0 10px 0;
+
+}
+
+.elcTop{
+    display: flex;
+    gap: 10px;
+}
+.elcTopRight{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+.elcTopRight > h5{
+    font-weight: 400;
+    color: #00525E;
+}
