@@ -32,7 +32,7 @@ function EventListCard({ eventId }) {
 									: eventDetails && eventDetails.Venue
 									? `${eventDetails && eventDetails.Venue.address}, ${eventDetails && eventDetails.Venue.city}, ${
 											eventDetails && eventDetails.Venue.state
-									  }`
+									}`
 									: "No Location Yet"}
 							</span>
 						</div>
