@@ -22,7 +22,7 @@ function EventListCard({ eventId }) {
 				<div className='elcContainer'>
 					<div className='elcTop'>
 						<div className='glcImg'>
-							<img src={noImgUrl}></img>
+							<img src={eventDetails && eventDetails.EventImages[0].url}></img>
 						</div>
 						<div className='elcTopRight'>
 							<h5>{eventDetails && eventDetails.startDate}</h5>

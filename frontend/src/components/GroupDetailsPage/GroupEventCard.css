@@ -16,6 +16,11 @@
 	display: flex;
     gap: 10px;
 }
+.gecTop > img {
+	width: 250px;
+	height: 166px;
+	object-fit: cover;
+}
 .gecTopRight {
 	display: flex;
 	flex-direction: column;

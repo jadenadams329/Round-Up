@@ -16,6 +16,7 @@
 	.gdpTopLeft {
 		display: flex;
 		flex-direction: column;
+		gap: 10px;
 	}
 
 	.gdpGroupLink {
@@ -31,7 +32,7 @@
 	}
 
 	.gdpTopRight {
-		padding-top: 14px;
+		padding-top: 24px;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;

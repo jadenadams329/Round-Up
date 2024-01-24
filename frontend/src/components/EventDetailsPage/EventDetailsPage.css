@@ -1,0 +1,146 @@
+.edp-grid-container {
+	display: grid;
+	grid-template-columns: 1fr 4fr 4fr 1fr;
+    grid-template-rows: auto auto auto auto;
+    margin-top: 75px;
+}
+
+.edp-item1 {
+	grid-column: 1 / span 1;
+	grid-row: 2 / span 2;
+    background-color: rgb(246, 246, 246);
+}
+.edp-item2{
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 1;
+
+}
+.edp-item3 {
+	grid-column: 2 / span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 50px;
+
+}
+
+.edp-item4 {
+	grid-column: 4 / span 1;
+	grid-row: 2 / span 2;
+    background-color: rgb(246, 246, 246);
+}
+
+.edp-item5{
+    grid-column: 4 / span 1;
+
+}
+
+.edp-item6 {
+	grid-column: 2 / span 2;
+    background-color: rgb(246, 246, 246);
+    display: flex;
+    gap: 50px;
+    padding-top: 30px;
+}
+
+.edp-item10 {
+	grid-column: 2 / span 2;
+    background-color: rgb(246, 246, 246);
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.edp-item{
+    grid-column: 1 / span 5 ;
+    grid-row: 5 / span 1;
+    background-color: rgb(246, 246, 246);
+    height: 50vh;
+}
+
+.edpInfo{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.edpEventImg > img {
+    width: 550px;
+	height: 365px;
+	object-fit: cover;
+}
+.edpCardLink{
+    text-decoration: none;
+    color: black;
+}
+
+.edgcContainer{
+    display: flex;
+    background-color: white;
+	transition: 0.3s;
+    width: 100%;
+	border-radius: 15px;
+    padding: 16px 16px;
+    gap: 20px;
+
+}
+
+.edgcContainer:hover{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.edgcImg > img {
+    width: 150px;
+	height: 100px;
+	object-fit: cover;
+
+}
+
+.edgcInfo{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+
+}
+
+.ediContainer{
+	display: flex;
+	flex-direction: column;
+    gap: 20px;
+    background-color: white;
+    width: 100%;
+	border-radius: 15px;
+    padding: 25px 25px;
+}
+.ediTimeContainer{
+	display: flex;
+	gap: 20px;
+    align-items: center;
+
+}
+.ediTimeContainer > i{
+    font-size: 25px;
+}
+.ediTime{
+	display: flex;
+	gap: 10px;
+}
+.ediPrice{
+    display: flex;
+    gap: 31px;
+    align-items: center;
+}
+.ediPrice > i {
+    font-size: 25px;
+}
+.ediType{
+    display: flex;
+    gap: 31px;
+    align-items: center;
+}
+.ediType > i {
+    font-size: 25px;
+}
