@@ -15,17 +15,17 @@ module.exports = {
 			[
 				{
 					eventId: 1,
-					url: "event1",
+					url: "https://machineswithsouls.com/wp-content/uploads/2020/10/33.jpg",
 					preview: true,
 				},
 				{
 					eventId: 2,
-					url: "event2",
+					url: "https://images.squarespace-cdn.com/content/v1/532f75c0e4b0e9d45dd4ef14/1548112179905-7F5S2KEQXXI78RIU9YGF/ACIE+MEET+01.20.2019-7775.jpg?format=2500w",
 					preview: true,
 				},
 				{
 					eventId: 3,
-					url: "event3",
+					url: "https://i.ytimg.com/vi/LPmi8hgPnuk/maxresdefault.jpg",
 					preview: true,
 				},
 			],

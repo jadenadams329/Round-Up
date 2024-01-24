@@ -7,7 +7,7 @@ export const RECEIVE_EVENT = "events/RECEIVE_EVENT";
 /**  Action Creators: */
 export const loadEvents = (events) => ({
 	type: LOAD_EVENTS,
-	payload: events.Events,
+	events,
 });
 
 export const receiveEvent = (event) => ({
@@ -35,25 +35,27 @@ export const getEvent = (eventId) => async (dispatch) => {
 };
 
 /** Reducer: */
-const initialState = {}
+const initialState = {
+	eventsInfo: {},
+	eventDetails: {}
+};
 
 const eventsReducer = (state = initialState, action) => {
 	switch (action.type) {
-
 		case LOAD_EVENTS: {
-			const eventsState = {};
-			action.payload.forEach((event) => {
-				eventsState[event.id] = event;
+			const newState = {};
+			action.events.Events.forEach((event) => {
+				newState[event.id] = event;
 			});
-			return { ...state, eventsState };
+			return {...state, eventsInfo: newState}
 		}
 
 		case RECEIVE_EVENT:
-			return { ...state, [action.event.id]: action.event };
+			return { ...state, eventDetails: {...state.eventDetails, [action.event.id]: action.event}};
 
-        default:
-            return state;
-    }
-}
+		default:
+			return state;
+	}
+};
 
 export default eventsReducer;

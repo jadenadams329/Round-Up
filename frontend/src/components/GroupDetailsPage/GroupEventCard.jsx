@@ -4,12 +4,11 @@ import { getEvent } from "../../store/events";
 import './GroupEventCard.css'
 
 function GroupEventCard({ event }) {
-	const noImgUrl =
-		"https://t4.ftcdn.net/jpg/05/17/53/57/240_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg";
 	const { id, startDate } = event;
 	const dispatch = useDispatch();
+	console.log(event)
 
-	const eventDetails = useSelector((state) => state.events[id]);
+	const eventDetails = useSelector((state) => state.events.eventDetails[id]);
 
 	useEffect(() => {
 		dispatch(getEvent(id));
@@ -18,7 +17,7 @@ function GroupEventCard({ event }) {
 		<>
 			<div className="gecContainer">
 				<div className="gecTop">
-					<img src={noImgUrl}></img>
+					<img src={event && event.previewImage}></img>
 					<div className="gecTopRight">
 						<h5>{startDate}</h5>
 						<h4>{eventDetails && eventDetails.name}</h4>

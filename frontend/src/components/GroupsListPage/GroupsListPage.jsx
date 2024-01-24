@@ -1,17 +1,23 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllGroups } from "../../store/groups";
 import { Link } from "react-router-dom";
 import GroupListCard from "./GroupListCard";
 import "./GroupsListPage.css";
+import Spinner from "../Spinner/Spinner";
 
 function GroupsListPage() {
+	const [isLoaded, setIsLoaded] = useState(false);
 	const dispatch = useDispatch();
 	const groups = useSelector((state) => state.groups.groupInfo);
 	const groupsList = Object.values(groups);
 
 	useEffect(() => {
-		dispatch(getAllGroups());
+		dispatch(getAllGroups())
+		.then(() => {
+			setIsLoaded(true);
+		})
+		
 	}, [dispatch]);
 
 	return (
@@ -26,7 +32,8 @@ function GroupsListPage() {
 						<h2 className="glpMenuActive">Groups</h2>
 					</div>
 					<p className="glpMenuP">Groups in Roundup</p>
-                    {groupsList.map((group) => (
+					<div id='spinner'>{!isLoaded && <Spinner />}</div>
+                    {isLoaded && groupsList.map((group) => (
                         <Link key={group.id} className="glpCardLink" to={`/groups/${group.id}`}><GroupListCard group={group} key={group.id}/></Link>
                     ))}
 				</div>
