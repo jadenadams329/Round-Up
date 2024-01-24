@@ -15,7 +15,6 @@ function EventDetailsPage() {
 	const [isLoaded, setIsLoaded] = useState(false);
 	const eventDetails = useSelector((state) => state.events.eventDetails[id]);
 	const group = useSelector((state) => state.groups.groupInfo[eventDetails?.groupId]);
-	console.log(eventDetails);
 
 	useEffect(() => {
 		dispatch(getEvent(id));

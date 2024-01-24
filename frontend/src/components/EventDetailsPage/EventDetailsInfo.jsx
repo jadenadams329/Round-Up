@@ -1,5 +1,4 @@
 function EventDetailsInfo({ event }) {
-	console.log(event);
 	return (
 		<>
 			<div className="ediContainer">

@@ -1,7 +1,6 @@
 
 
 function EventDetailsGroupCard({group}) {
-    console.log(group)
 
   return (
    <>
