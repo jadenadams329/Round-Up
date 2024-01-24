@@ -27,7 +27,6 @@ function UpdateGroupForm() {
 	const [type, setType] = useState(group?.type);
 	const [imgUrl, setImgUrl] = useState(previewImg?.url ? previewImg.url : "");
 	const [errors, setErrors] = useState({});
-	const [hasSubmitted, setHasSubmitted] = useState(false);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -52,7 +51,6 @@ function UpdateGroupForm() {
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		setHasSubmitted(true);
 		const isPrivate = privacy === "Private";
 		console.log(hasErrors)
 		if (!hasErrors) {
@@ -64,7 +62,6 @@ function UpdateGroupForm() {
 				if (previewImg.url !== imgUrl) {
 					await dispatch(addImage(group.id, createImage));
 				}
-				setHasSubmitted(false);
 				hasErrors = false;
 				navigate(`/groups/${group.id}`);
 			} catch (res) {
