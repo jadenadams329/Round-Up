@@ -3,6 +3,7 @@ import { csrfFetch } from "./csrf";
 /** Action Type Constants: */
 export const LOAD_EVENTS = "events/LOAD_EVENTS";
 export const RECEIVE_EVENT = "events/RECEIVE_EVENT";
+export const ADD_EVENT = "events/ADD_EVENT";
 
 /**  Action Creators: */
 export const loadEvents = (events) => ({
@@ -12,6 +13,11 @@ export const loadEvents = (events) => ({
 
 export const receiveEvent = (event) => ({
 	type: RECEIVE_EVENT,
+	event,
+});
+
+export const createEvent = (event) => ({
+	type: ADD_EVENT,
 	event,
 });
 
@@ -34,10 +40,26 @@ export const getEvent = (eventId) => async (dispatch) => {
 	}
 };
 
+export const addEvent = (groupId, data) => async (dispatch) => {
+	const res = await csrfFetch(`/api/groups/${groupId}/events`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data),
+	});
+
+	if (res.ok) {
+		const event = await res.json();
+		dispatch(createEvent(event));
+		return event;
+	}
+};
+
 /** Reducer: */
 const initialState = {
 	eventsInfo: {},
-	eventDetails: {}
+	eventDetails: {},
 };
 
 const eventsReducer = (state = initialState, action) => {
@@ -47,11 +69,14 @@ const eventsReducer = (state = initialState, action) => {
 			action.events.Events.forEach((event) => {
 				newState[event.id] = event;
 			});
-			return {...state, eventsInfo: newState}
+			return { ...state, eventsInfo: newState };
 		}
 
 		case RECEIVE_EVENT:
-			return { ...state, eventDetails: {...state.eventDetails, [action.event.id]: action.event}};
+			return { ...state, eventDetails: { ...state.eventDetails, [action.event.id]: action.event } };
+
+		case ADD_EVENT:
+			return { ...state, eventsInfo: { ...state.eventsInfo, [action.event.id]: action.event } };
 
 		default:
 			return state;

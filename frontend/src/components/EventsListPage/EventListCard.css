@@ -1,11 +1,19 @@
 .elcContainer{
     display: flex;
-    flex-wrap: wrap;
 	flex-direction: column;
     gap: 10px;
     border-top: 1px solid lightgray;
     padding: 10px 0 10px 0;
+    height: 250px;
 
+}
+
+.elcContainer p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Number of lines to display before truncating */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .elcTop{

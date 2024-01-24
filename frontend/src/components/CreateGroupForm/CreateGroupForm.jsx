@@ -28,7 +28,6 @@ function CreateGroupForm() {
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		setHasSubmitted(true);
-		console.log(imgUrl);
 		const isPrivate = privacy === "Private";
 		if (!hasErrors) {
 			const [city, state] = handleLocation(location);
@@ -71,7 +70,6 @@ function CreateGroupForm() {
 		if (!(imgUrl.endsWith(".png") || imgUrl.endsWith(".jpg") || imgUrl.endsWith(".jpeg")))
 			validationErrors["imgUrl"] = "Image URL must end with .png, .jpg, or .jpeg";
 		setErrors(validationErrors);
-		console.log(imgUrl);
 	}, [location, name, about, privacy, type, imgUrl]);
 
 	return (

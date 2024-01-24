@@ -1,0 +1,75 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    padding: 10px;
+  }
+
+  .ceEventName{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    gap: 5px;
+
+  }
+
+  .ceSecondContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-top: 1px solid gray;
+    padding-top: 15px;
+    margin-bottom: 20px;
+
+  }
+
+  .ceType{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .cePrivacy{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .cePrice{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .ceSectionContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-top: 1px solid gray;
+    padding-top: 15px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .ceStartContainer{
+    display: flex;
+    align-items: end;
+    gap: 10px;
+
+  }
+  .ceStart{
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    gap: 5px;
+  }
+  .ceStartContainer > i {
+    font-size: 20px;
+  }
+  .ceImg{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .ceDescription{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
