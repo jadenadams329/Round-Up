@@ -4,8 +4,6 @@ import { getEvent } from "../../store/events";
 import './GroupEventCard.css'
 
 function GroupEventCard({ event }) {
-	const noImgUrl =
-		"https://t4.ftcdn.net/jpg/05/17/53/57/240_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg";
 	const { id, startDate } = event;
 	const dispatch = useDispatch();
 	console.log(event)

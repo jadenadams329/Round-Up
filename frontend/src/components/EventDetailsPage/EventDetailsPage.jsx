@@ -1,5 +1,5 @@
 import "./EventDetailsPage.css";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getEvent } from "../../store/events";
@@ -9,7 +9,6 @@ import EventDetailsGroupCard from "./EventDetailsGroupCard";
 import EventDetailsInfo from "./EventDetailsInfo";
 
 function EventDetailsPage() {
-	const noImgUrl = "https://t4.ftcdn.net/jpg/05/17/53/57/240_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg";
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const [isLoaded, setIsLoaded] = useState(false);
@@ -44,21 +43,21 @@ function EventDetailsPage() {
 					<div className='edp-item4'></div>
 					<div className='edp-item5'></div>
 					<div className='edp-item6'>
-                        <div className="edpEventImg">
-						    <img src={eventDetails && eventDetails.EventImages[0].url}></img>
-                        </div>
-                        <div className="edpInfo">
-                            <Link className='edpCardLink' to={`/groups/${group.id}`}>
-                            <EventDetailsGroupCard group={group}/>
-                            </Link>
-                            <EventDetailsInfo event={eventDetails}/>
-                        </div>
+						<div className='edpEventImg'>
+							<img src={eventDetails && eventDetails.EventImages[0].url}></img>
+						</div>
+						<div className='edpInfo'>
+							<Link className='edpCardLink' to={`/groups/${group.id}`}>
+								<EventDetailsGroupCard group={group} />
+							</Link>
+							<EventDetailsInfo event={eventDetails} />
+						</div>
 					</div>
 					<div className='edp-item10'>
 						<h3>Details</h3>
 						<p>{eventDetails && eventDetails.description}</p>
 					</div>
-                    <div className='edp-item'></div>
+					<div className='edp-item'></div>
 				</div>
 			)}
 		</>
