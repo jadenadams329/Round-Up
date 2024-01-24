@@ -40,6 +40,10 @@ const router = createBrowserRouter([
 				path: "/groups",
 				element: <GroupsListPage />,
 			},
+      {
+				path: "/events",
+				element: <EventsListPage />,
+			},
 			{
 				path: "/groups/:id",
 				element: <GroupDetailsPage />,
@@ -51,10 +55,6 @@ const router = createBrowserRouter([
 			{
 				path: "/groups/:id/edit",
 				element: <UpdateGroupForm />,
-			},
-			{
-				path: "/events",
-				element: <EventsListPage />,
 			},
 			{
 				path: "/events/:id",

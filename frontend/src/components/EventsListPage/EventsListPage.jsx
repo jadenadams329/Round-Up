@@ -7,13 +7,16 @@ import Spinner from "../Spinner/Spinner";
 
 function EventsListPage() {
 	const dispatch = useDispatch();
-	const events = useSelector((state) => state.events);
-	const eventList = Object.values(events.eventsState);
+	const events = useSelector((state) => state.events.eventsInfo);
+    const eventList = Object.values(events)
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
 		dispatch(getAllEvents()).then(() => {
 			setIsLoaded(true);
+		})
+        .catch(error => {
+			console.error("An error occurred: ", error);
 		});
 	}, [dispatch]);
 

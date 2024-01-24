@@ -33,10 +33,28 @@ function UpdateGroupForm() {
 	const navigate = useNavigate();
 	let hasErrors = Object.values(errors).length === 0 ? false : true;
 
+
+
+
+	useEffect(() => {
+		const validationErrors = {};
+		if (validator.isEmpty(location)) validationErrors["location"] = "Location is required";
+		if (!location.includes(","))
+			validationErrors["locationFormat"] = "Please put a comma (,) between the city and state";
+		if (validator.isEmpty(name)) validationErrors["name"] = "Name is required";
+		if (about.length < 50) validationErrors["about"] = "Description must be at least 50 characters long";
+		if (validator.isEmpty(privacy)) validationErrors["privacy"] = "Visability Type is required";
+		if (validator.isEmpty(type)) validationErrors["type"] = "Group Type is required";
+		if (!(imgUrl.endsWith(".png") || imgUrl.endsWith(".jpg") || imgUrl.endsWith(".jpeg")))
+			validationErrors["imgUrl"] = "Image URL must end with .png, .jpg, or .jpeg";
+		setErrors(validationErrors);
+	}, [location, name, about, privacy, type, imgUrl]);
+
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		setHasSubmitted(true);
 		const isPrivate = privacy === "Private";
+		console.log(hasErrors)
 		if (!hasErrors) {
 			const [city, state] = handleLocation(location);
 			const createGroup = { name, about, type, private: isPrivate, city, state };
@@ -58,19 +76,7 @@ function UpdateGroupForm() {
 		}
 	};
 
-	useEffect(() => {
-		const validationErrors = {};
-		if (validator.isEmpty(location)) validationErrors["location"] = "Location is required";
-		if (!location.includes(","))
-			validationErrors["locationFormat"] = "Please put a comma (,) between the city and state";
-		if (validator.isEmpty(name)) validationErrors["name"] = "Name is required";
-		if (about.length < 30) validationErrors["about"] = "Description must be at least 30 characters long";
-		if (validator.isEmpty(privacy)) validationErrors["privacy"] = "Visability Type is required";
-		if (validator.isEmpty(type)) validationErrors["type"] = "Group Type is required";
-		if (!(imgUrl.endsWith(".png") || imgUrl.endsWith(".jpg") || imgUrl.endsWith(".jpeg")))
-			validationErrors["imgUrl"] = "Image URL must end with .png, .jpg, or .jpeg";
-		setErrors(validationErrors);
-	}, [location, name, about, privacy, type, imgUrl, dispatch, id]);
+
 
 	return (
 		<>
@@ -94,8 +100,8 @@ function UpdateGroupForm() {
 							placeholder='City, STATE'
 							name='location'
 						></input>
-						{errors.location && hasSubmitted && <p className='cgError'>{errors.location}</p>}
-						{errors.locationFormat && hasSubmitted && <p className='cgError'>{errors.locationFormat}</p>}
+						{errors.location && <p className='cgError'>{errors.location}</p>}
+						{errors.locationFormat && <p className='cgError'>{errors.locationFormat}</p>}
 					</div>
 					<div className='cgName'>
 						<h2>What will your group&apos;s name be?</h2>
@@ -110,7 +116,7 @@ function UpdateGroupForm() {
 							placeholder="What is your group's name?"
 							name='name'
 						></input>
-						{errors.name && hasSubmitted && <p className='cgError'>{errors.name}</p>}
+						{errors.name && <p className='cgError'>{errors.name}</p>}
 					</div>
 					<div className='cgAbout'>
 						<h2>Now describe what your group will be about</h2>
@@ -127,7 +133,7 @@ function UpdateGroupForm() {
 							name='about'
 							placeholder='Please write at least 30 characters'
 						></textarea>
-						{errors.about && hasSubmitted && <p className='cgError'>{errors.about}</p>}
+						{errors.about && <p className='cgError'>{errors.about}</p>}
 					</div>
 					<div className='cgBottom'>
 						<h2>Final steps...</h2>
@@ -140,7 +146,7 @@ function UpdateGroupForm() {
 								<option value={"In person"}>In person</option>
 								<option value={"Online"}>Online</option>
 							</select>
-							{errors.type && hasSubmitted && <p className='cgError'>{errors.type}</p>}
+							{errors.type && <p className='cgError'>{errors.type}</p>}
 						</div>
 						<p>Is this group private or public?</p>
 						<div className='cgSelect'>
@@ -151,7 +157,7 @@ function UpdateGroupForm() {
 								<option value={"Private"}>Private</option>
 								<option value={"Public"}>Public</option>
 							</select>
-							{errors.privacy && hasSubmitted && <p className='cgError'>{errors.privacy}</p>}
+							{errors.privacy && <p className='cgError'>{errors.privacy}</p>}
 						</div>
 						<p>Please add in image url for your group below:</p>
 						<input
@@ -160,7 +166,7 @@ function UpdateGroupForm() {
 							value={imgUrl}
 							onChange={(e) => setImgUrl(e.target.value)}
 						></input>
-						{errors.imgUrl && hasSubmitted && <p className='cgError'>{errors.imgUrl}</p>}
+						{errors.imgUrl && <p className='cgError'>{errors.imgUrl}</p>}
 					</div>
 					<div className='cgButton'>
 						<button type='submit'>Update group</button>

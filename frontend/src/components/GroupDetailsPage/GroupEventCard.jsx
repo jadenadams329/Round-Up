@@ -9,7 +9,7 @@ function GroupEventCard({ event }) {
 	const { id, startDate } = event;
 	const dispatch = useDispatch();
 
-	const eventDetails = useSelector((state) => state.events[id]);
+	const eventDetails = useSelector((state) => state.events.eventDetails[id]);
 
 	useEffect(() => {
 		dispatch(getEvent(id));

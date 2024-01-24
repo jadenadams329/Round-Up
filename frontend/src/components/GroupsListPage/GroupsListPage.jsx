@@ -13,9 +13,11 @@ function GroupsListPage() {
 	const groupsList = Object.values(groups);
 
 	useEffect(() => {
-		dispatch(getAllGroups()).then(() => {
+		dispatch(getAllGroups())
+		.then(() => {
 			setIsLoaded(true);
-		});
+		})
+		
 	}, [dispatch]);
 
 	return (
