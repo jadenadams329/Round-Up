@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import * as sessionActions from "../../store/session";
 
-function ProfileButton({ user }) {
+function ProfileButton({ user, navigate }) {
 	const dispatch = useDispatch();
 	const [showMenu, setShowMenu] = useState(false);
 	const ulRef = useRef();
@@ -29,7 +29,10 @@ function ProfileButton({ user }) {
 
 	const logout = (e) => {
 		e.preventDefault();
-		dispatch(sessionActions.logout());
+		dispatch(sessionActions.logout()).then(() => {
+			navigate();
+		})
+
 	};
 
 	const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");

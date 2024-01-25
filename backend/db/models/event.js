@@ -50,15 +50,7 @@ module.exports = (sequelize, DataTypes) => {
 
 			const allEvents = await Event.findAll({
 				subQuery: false,
-				attributes: [
-					"id",
-					"groupId",
-					"venueId",
-					"name",
-					"type",
-					"startDate",
-					"endDate",
-				],
+				attributes: ["id", "groupId", "venueId", "name", "type", "startDate", "endDate"],
 				where,
 				limit: size,
 				offset: (page - 1) * size,
@@ -74,17 +66,11 @@ module.exports = (sequelize, DataTypes) => {
 					{
 						model: sequelize.models.Attendance,
 						where: {
-							status: ["attending", "host", "co-host"]
+							status: ["attending", "host", "co-host"],
 						},
 						attributes: [
 							[
-								Event.sequelize.fn(
-									"COUNT",
-									Event.sequelize.fn(
-										"DISTINCT",
-										Event.sequelize.col("Attendances.id")
-									)
-								),
+								Event.sequelize.fn("COUNT", Event.sequelize.fn("DISTINCT", Event.sequelize.col("Attendances.id"))),
 								"numAttending",
 							],
 						],
@@ -126,17 +112,11 @@ module.exports = (sequelize, DataTypes) => {
 					{
 						model: sequelize.models.Attendance,
 						where: {
-							status: ["attending", "host", "co-host"]
+							status: ["attending", "host", "co-host"],
 						},
 						attributes: [
 							[
-								Event.sequelize.fn(
-									"COUNT",
-									Event.sequelize.fn(
-										"DISTINCT",
-										Event.sequelize.col("Attendances.id")
-									)
-								),
+								Event.sequelize.fn("COUNT", Event.sequelize.fn("DISTINCT", Event.sequelize.col("Attendances.id"))),
 								"numAttending",
 							],
 						],
@@ -149,15 +129,7 @@ module.exports = (sequelize, DataTypes) => {
 						required: false,
 					},
 				],
-				attributes: [
-					"id",
-					"groupId",
-					"venueId",
-					"name",
-					"type",
-					"startDate",
-					"endDate",
-				],
+				attributes: ["id", "groupId", "venueId", "name", "type", "startDate", "endDate"],
 				group: ["Event.id", "Group.id", "Venue.id", "Event_Images.id"],
 				raw: true,
 			});
@@ -169,11 +141,11 @@ module.exports = (sequelize, DataTypes) => {
 
 		static organizeEvents(result) {
 			const events = result.map((event) => {
-				if(!Number.isInteger(event['Attendances.numAttending'])){
-					console.log("numAttending was a string, converting to int...")
-					event['Attendances.numAttending'] = parseInt(event['Attendances.numAttending'])
+				if (!Number.isInteger(event["Attendances.numAttending"])) {
+					console.log("numAttending was a string, converting to int...");
+					event["Attendances.numAttending"] = parseInt(event["Attendances.numAttending"]);
 				} else {
-					console.log("numAttending is an int")
+					console.log("numAttending is an int");
 				}
 				let venue = {
 					id: event["Venue.id"],
@@ -185,14 +157,23 @@ module.exports = (sequelize, DataTypes) => {
 					venue = null;
 				}
 
+				let startDate = new Date(event.startDate);
+				let endDate = new Date(event.endDate);
+				let timeOptions = { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true };
+				let dateOptions = { year: "numeric", month: "2-digit", day: "2-digit" };
+				let formattedStartDate =
+					startDate.toLocaleDateString("en-US", dateOptions) + " " + startDate.toLocaleTimeString("en-US", timeOptions);
+				let formattedEndDate =
+					endDate.toLocaleDateString("en-US", dateOptions) + " " + endDate.toLocaleTimeString("en-US", timeOptions);
+
 				return {
 					id: event.id,
 					groupId: event.groupId,
 					venueId: event.venueId,
 					name: event.name,
 					type: event.type,
-					startDate: event.startDate,
-					endDate: event.endDate,
+					startDate: formattedStartDate,
+					endDate: formattedEndDate,
 					numAttending: event["Attendances.numAttending"],
 					previewImage: event["Event_Images.url"],
 					Group: {
@@ -231,25 +212,33 @@ module.exports = (sequelize, DataTypes) => {
 			const numAttending = await sequelize.models.Attendance.count({
 				where: {
 					eventId: eventId,
-					status: ["attending", "host", "co-host"]
+					status: ["attending", "host", "co-host"],
 				},
 			});
 
-			if(!Number.isInteger(numAttending)){
-				console.log("Converting numAttending into int")
-				event.numAttending = parseInt(numAttending)
+			if (!Number.isInteger(numAttending)) {
+				console.log("Converting numAttending into int");
+				event.numAttending = parseInt(numAttending);
 			} else {
-				console.log("numAttending is an int")
+				console.log("numAttending is an int");
 				event.numAttending = numAttending;
 			}
-
-
 
 			const result = Event.organizeEvent(event);
 			return result;
 		}
 
 		static organizeEvent(obj) {
+			let startDate = new Date(obj.startDate);
+			let endDate = new Date(obj.endDate);
+
+			let timeOptions = { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true };
+			let dateOptions = { year: "numeric", month: "2-digit", day: "2-digit" };
+
+			let formattedStartDate =
+				startDate.toLocaleDateString("en-US", dateOptions) + " " + startDate.toLocaleTimeString("en-US", timeOptions);
+			let formattedEndDate =
+				endDate.toLocaleDateString("en-US", dateOptions) + " " + endDate.toLocaleTimeString("en-US", timeOptions);
 			return {
 				id: obj.id,
 				groupId: obj.groupId,
@@ -259,8 +248,8 @@ module.exports = (sequelize, DataTypes) => {
 				type: obj.type,
 				capacity: obj.capacity,
 				price: obj.price,
-				startDate: obj.startDate,
-				endDate: obj.endDate,
+				startDate: formattedStartDate,
+				endDate: formattedEndDate,
 				numAttending: obj.numAttending,
 				Group: obj.Group,
 				Venue: obj.Venue,

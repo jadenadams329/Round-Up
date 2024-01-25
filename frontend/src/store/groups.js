@@ -112,6 +112,7 @@ export const deleteGroup = (groupId) => async (dispatch) => {
 const initialState = {
 	groupInfo: {},
 	groupEvents: {},
+	isLoading: true,
 };
 const groupsReducer = (state = initialState, action) => {
 	switch (action.type) {
@@ -124,7 +125,7 @@ const groupsReducer = (state = initialState, action) => {
 		}
 
 		case RECEIVE_GROUP:
-			return { ...state, groupInfo: { ...state.groupInfo, [action.group.id]: action.group } };
+			return { ...state, groupInfo: { ...state.groupInfo, [action.group.id]: action.group }, isLoading: false };
 
 		case RECEIVE_GROUP_EVENTS: {
 			const groupEventsState = {};

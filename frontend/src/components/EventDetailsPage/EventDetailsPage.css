@@ -140,6 +140,11 @@
     display: flex;
     gap: 31px;
     align-items: center;
+    justify-content: sp;
+}
+.ediType > div{
+    display: flex;
+    gap: 30px;
 }
 .ediType > i {
     font-size: 25px;

@@ -55,7 +55,7 @@ function EventDetailsPage() {
 							<Link className='edpCardLink' to={`/groups/${group.id}`}>
 								<EventDetailsGroupCard group={group} />
 							</Link>
-							<EventDetailsInfo event={eventDetails} navigate={callNavigate} />
+							<EventDetailsInfo group={group} event={eventDetails} navigate={callNavigate} />
 						</div>
 					</div>
 					<div className='edp-item10'>
