@@ -33,10 +33,14 @@ function GroupDetailsPage() {
 		navigate(`/groups/${id}/edit`);
 	};
 
+	const createEventClick = () => {
+		navigate(`/groups/${id}/events/new`)
+	}
+
 	if (sessionUser && group && sessionUser.id === group.organizerId) {
 		groupButtons = (
 			<>
-				<button className='gdpButtons'>Create event</button>
+				<button className='gdpButtons' onClick={createEventClick}>Create event</button>
 				<button className='gdpButtons' onClick={handleUpdateClick}>
 					Update
 				</button>

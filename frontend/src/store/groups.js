@@ -35,7 +35,7 @@ export const editGroup = (group) => ({
 });
 
 export const removeGroup = (groupId) => ({
-	type: RECEIVE_GROUP,
+	type: REMOVE_GROUP,
 	groupId,
 });
 
@@ -104,7 +104,7 @@ export const deleteGroup = (groupId) => async (dispatch) => {
 		method: "DELETE",
 	});
 	if (res.ok) {
-		dispatch(receiveGroup(groupId));
+		dispatch(removeGroup(groupId));
 	}
 };
 

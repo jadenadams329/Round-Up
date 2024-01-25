@@ -1,5 +1,5 @@
 import "./EventDetailsPage.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getEvent } from "../../store/events";
@@ -14,6 +14,11 @@ function EventDetailsPage() {
 	const [isLoaded, setIsLoaded] = useState(false);
 	const eventDetails = useSelector((state) => state.events.eventDetails[id]);
 	const group = useSelector((state) => state.groups.groupInfo[eventDetails?.groupId]);
+	const navigate = useNavigate();
+
+	const callNavigate = () => {
+		return navigate(`/groups/${eventDetails.groupId}`);
+	};
 
 	useEffect(() => {
 		dispatch(getEvent(id));
@@ -50,7 +55,7 @@ function EventDetailsPage() {
 							<Link className='edpCardLink' to={`/groups/${group.id}`}>
 								<EventDetailsGroupCard group={group} />
 							</Link>
-							<EventDetailsInfo event={eventDetails} />
+							<EventDetailsInfo event={eventDetails} navigate={callNavigate} />
 						</div>
 					</div>
 					<div className='edp-item10'>
