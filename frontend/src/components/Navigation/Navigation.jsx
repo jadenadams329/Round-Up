@@ -6,15 +6,20 @@ import LoginFormModal from "../LoginFormModal/LoginFormModal";
 import SignupFormModal from "../SignupFormModal/SignupFormModal";
 import "./Navigation.css";
 import logo from "../images/logo.png";
+import { useNavigate } from "react-router-dom";
 
 function Navigation({ isLoaded }) {
 	const sessionUser = useSelector((state) => state.session.user);
+	const navigate = useNavigate();
+	const callNavigate = () => {
+		return navigate(`/`);
+	};
 
 	let sessionLinks;
 	if (sessionUser) {
 		sessionLinks = (
 			<li className='navListItem' id='profileButton'>
-				<ProfileButton user={sessionUser} />
+				<ProfileButton user={sessionUser} navigate={callNavigate} />
 			</li>
 		);
 	} else {

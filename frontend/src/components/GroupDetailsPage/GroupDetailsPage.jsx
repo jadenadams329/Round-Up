@@ -8,6 +8,7 @@ import moment from "moment";
 import DeleteGroupModal from "../DeleteGroupModal/DeleteGroupModal";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import Spinner from "../Spinner/Spinner";
+import JoinGroupModal from "./JoinGroupModal";
 
 function GroupDetailsPage() {
 	const noImgUrl = "https://t4.ftcdn.net/jpg/05/17/53/57/240_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg";
@@ -20,8 +21,9 @@ function GroupDetailsPage() {
 	const sessionUser = useSelector((state) => state.session.user);
 	const eventList = Object.values(events);
 	const Today = moment();
-	const upcomingEvents = eventList.filter((event) => moment(event.startDate).isSameOrAfter(Today));
-	const pastEvents = eventList.filter((event) => moment(event.endDate).isBefore(Today));
+	const sortedEvents = eventList.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+	const upcomingEvents = sortedEvents.filter((event) => moment(event.startDate).isSameOrAfter(Today));
+	const pastEvents = sortedEvents.filter((event) => moment(event.endDate).isBefore(Today));
 	const [isLoaded, setIsLoaded] = useState(false);
 	let groupButtons;
 
@@ -34,13 +36,15 @@ function GroupDetailsPage() {
 	};
 
 	const createEventClick = () => {
-		navigate(`/groups/${id}/events/new`)
-	}
+		navigate(`/groups/${id}/events/new`);
+	};
 
 	if (sessionUser && group && sessionUser.id === group.organizerId) {
 		groupButtons = (
 			<>
-				<button className='gdpButtons' onClick={createEventClick}>Create event</button>
+				<button className='gdpButtons' onClick={createEventClick}>
+					Create event
+				</button>
 				<button className='gdpButtons' onClick={handleUpdateClick}>
 					Update
 				</button>
@@ -54,7 +58,7 @@ function GroupDetailsPage() {
 	} else if (sessionUser && group && sessionUser.id !== group.organizerId) {
 		groupButtons = (
 			<>
-				<button className='gdpButtons'>Join this group</button>
+				<OpenModalButton cssClass={"gdpButtons"} buttonText={"Join this group"} modalComponent={<JoinGroupModal />} />
 			</>
 		);
 	} else {

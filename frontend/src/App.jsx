@@ -11,6 +11,7 @@ import UpdateGroupForm from "./components/UpdateGroupForm/UpdateGroupForm";
 import EventsListPage from "./components/EventsListPage/EventsListPage";
 import EventDetailsPage from "./components/EventDetailsPage/EventDetailsPage";
 import CreateEventForm from "./components/CreateEventForm/CreateEventForm";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
 function Layout() {
 	const dispatch = useDispatch();
@@ -60,12 +61,20 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/groups/:id/edit",
-				element: <UpdateGroupForm />,
+				element: (
+					<PrivateRoute>
+						<UpdateGroupForm />
+					</PrivateRoute>
+				),
 			},
 			{
 				path: "/groups/:id/events/new",
-				element: <CreateEventForm/>
-			}
+				element: <CreateEventForm />,
+			},
+			{
+				path: "*",
+				element: <h2>Not found</h2>,
+			},
 		],
 	},
 ]);
