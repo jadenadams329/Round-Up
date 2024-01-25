@@ -4,6 +4,7 @@ import { csrfFetch } from "./csrf";
 export const LOAD_EVENTS = "events/LOAD_EVENTS";
 export const RECEIVE_EVENT = "events/RECEIVE_EVENT";
 export const ADD_EVENT = "events/ADD_EVENT";
+export const REMOVE_EVENT = "events/REMOVE_EVENT";
 
 /**  Action Creators: */
 export const loadEvents = (events) => ({
@@ -19,6 +20,11 @@ export const receiveEvent = (event) => ({
 export const createEvent = (event) => ({
 	type: ADD_EVENT,
 	event,
+});
+
+export const removeEvent = (eventId) => ({
+	type: REMOVE_EVENT,
+	eventId,
 });
 
 /** Thunk Action Creators: */
@@ -56,6 +62,15 @@ export const addEvent = (groupId, data) => async (dispatch) => {
 	}
 };
 
+export const deleteEvent = (eventId) => async (dispatch) => {
+	const res = await csrfFetch(`/api/events/${eventId}`, {
+		method: "DELETE",
+	});
+	if (res.ok) {
+		dispatch(removeEvent(eventId));
+	}
+};
+
 /** Reducer: */
 const initialState = {
 	eventsInfo: {},
@@ -77,6 +92,12 @@ const eventsReducer = (state = initialState, action) => {
 
 		case ADD_EVENT:
 			return { ...state, eventsInfo: { ...state.eventsInfo, [action.event.id]: action.event } };
+
+		case REMOVE_EVENT: {
+			const newState = { ...state };
+			delete newState.eventsInfo[action.eventId];
+			return newState;
+		}
 
 		default:
 			return state;
