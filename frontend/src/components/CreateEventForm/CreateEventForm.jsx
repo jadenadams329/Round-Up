@@ -191,12 +191,12 @@ function CreateEventForm() {
 									{errors.description && hasSubmitted && <p className='cgError'>{errors.description}</p>}
 								</div>
 							</div>
-							<div>
+							<div className="ceButton">
 								<button>Create Event</button>
 							</div>
 						</form>
 						<div>
-							<button onClick={fillFormData}>Fill Form Data</button>
+							<button className="fillData" onClick={fillFormData}>Fill Form Data(Demo purposes)</button>
 						</div>
 					</div>
 					<div className='grid-item'></div>
