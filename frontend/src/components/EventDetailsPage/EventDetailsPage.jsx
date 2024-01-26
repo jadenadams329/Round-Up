@@ -2,29 +2,33 @@ import "./EventDetailsPage.css";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getEvent } from "../../store/events";
+import { getEventDetails } from "../../store/eventDetails";
 import { getGroup } from "../../store/groups";
 import Spinner from "../Spinner/Spinner";
 import EventDetailsGroupCard from "./EventDetailsGroupCard";
 import EventDetailsInfo from "./EventDetailsInfo";
 
 function EventDetailsPage() {
+
+	const noImgUrl = "https://t4.ftcdn.net/jpg/05/17/53/57/240_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg";
 	const { id } = useParams();
 	const dispatch = useDispatch();
-	const [isLoaded, setIsLoaded] = useState(false);
-	const eventDetails = useSelector((state) => state.events.eventDetails[id]);
-	const group = useSelector((state) => state.groups.groupInfo[eventDetails?.groupId]);
+	const [isLoaded, setIsLoaded] = useState(false)
+	const eventDetails = useSelector((state) => state.eventDetails.data[id]);
+	const group = useSelector((state) => state.groups.data[eventDetails?.groupId]);
 	const navigate = useNavigate();
+	const imageUrl = eventDetails && eventDetails.EventImages.length > 0 ? eventDetails.EventImages[0].url : noImgUrl;
 
 	const callNavigate = () => {
 		return navigate(`/groups/${eventDetails.groupId}`);
 	};
 
 	useEffect(() => {
-		dispatch(getEvent(id));
+		dispatch(getEventDetails(id));
 		dispatch(getGroup(eventDetails?.groupId)).then(() => {
 			setIsLoaded(true);
 		});
+
 	}, [dispatch, id, eventDetails?.groupId]);
 
 	if (!isLoaded) {
@@ -43,13 +47,13 @@ function EventDetailsPage() {
 					<div className='edp-item3'>
 						<Link to={"/events"}>{`< Events`}</Link>
 						<h2>{eventDetails && eventDetails.name}</h2>
-						<p>{`Hosted by ${group && group.Organizer.firstName} ${group && group.Organizer.lastName}`}</p>
+						<p>{group && group.Organizer && `Hosted by ${group.Organizer.firstName} ${group.Organizer.lastName}`}</p>
 					</div>
 					<div className='edp-item4'></div>
 					<div className='edp-item5'></div>
 					<div className='edp-item6'>
 						<div className='edpEventImg'>
-							<img src={eventDetails && eventDetails.EventImages[0].url}></img>
+							<img src={imageUrl}></img>
 						</div>
 						<div className='edpInfo'>
 							<Link className='edpCardLink' to={`/groups/${group.id}`}>

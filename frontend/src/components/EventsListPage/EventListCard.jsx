@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getEvent } from "../../store/events";
+import { getEventDetails } from "../../store/eventDetails";
 import "./EventListCard.css";
 
 function EventListCard({ eventId }) {
 	const dispatch = useDispatch();
-	const eventDetails = useSelector((state) => state.events.eventDetails[eventId]);
-	console.log(eventDetails)
-	const [isLoaded, setIsLoaded] = useState(false);
+	const [isLoaded, setIsLoaded] = useState(false)
+	const noImgUrl = "https://t4.ftcdn.net/jpg/05/17/53/57/240_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg";
+	const eventDetails = useSelector((state) => state.eventDetails.data[eventId]);
+	const imageUrl = eventDetails && eventDetails.EventImages.length > 0 ? eventDetails.EventImages[0].url : noImgUrl;
 
 	useEffect(() => {
-		dispatch(getEvent(eventId)).then(() => {
-			setIsLoaded(true);
-		});
+		dispatch(getEventDetails(eventId)).then(() => {
+			setIsLoaded(true)
+		})
 	}, [dispatch, eventId]);
 
 	return (
@@ -21,7 +22,7 @@ function EventListCard({ eventId }) {
 				<div className='elcContainer'>
 					<div className='elcTop'>
 						<div className='glcImg'>
-							<img src={eventDetails && eventDetails.EventImages[0].url}></img>
+							<img src={imageUrl}></img>
 						</div>
 						<div className='elcTopRight'>
 							<h5>{eventDetails && eventDetails.startDate}</h5>

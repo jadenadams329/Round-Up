@@ -2,7 +2,6 @@ import { csrfFetch } from "./csrf";
 
 /** Action Type Constants: */
 export const LOAD_EVENTS = "events/LOAD_EVENTS";
-export const RECEIVE_EVENT = "events/RECEIVE_EVENT";
 export const ADD_EVENT = "events/ADD_EVENT";
 export const REMOVE_EVENT = "events/REMOVE_EVENT";
 
@@ -12,10 +11,7 @@ export const loadEvents = (events) => ({
 	events,
 });
 
-export const receiveEvent = (event) => ({
-	type: RECEIVE_EVENT,
-	event,
-});
+
 
 export const createEvent = (event) => ({
 	type: ADD_EVENT,
@@ -37,14 +33,7 @@ export const getAllEvents = () => async (dispatch) => {
 	}
 };
 
-export const getEvent = (eventId) => async (dispatch) => {
-	const res = await csrfFetch(`/api/events/${eventId}`);
-	if (res.ok) {
-		const data = await res.json();
-		dispatch(receiveEvent(data));
-		return data;
-	}
-};
+
 
 export const addEvent = (groupId, data) => async (dispatch) => {
 	const res = await csrfFetch(`/api/groups/${groupId}/events`, {
@@ -73,32 +62,28 @@ export const deleteEvent = (eventId) => async (dispatch) => {
 
 /** Reducer: */
 const initialState = {
-	eventsInfo: {},
-	eventDetails: {},
+	data: {},
+	isLoading: true
 };
 
 const eventsReducer = (state = initialState, action) => {
 	switch (action.type) {
 		case LOAD_EVENTS: {
-			const newState = {};
+			const newData = { ...state.data };
 			action.events.Events.forEach((event) => {
-				newState[event.id] = event;
+				newData[event.id] = event;
 			});
-			return { ...state, eventsInfo: newState };
+			return { ...state, data: newData, isLoading: false };
 		}
-
-		case RECEIVE_EVENT:
-			return { ...state, eventDetails: { ...state.eventDetails, [action.event.id]: action.event } };
 
 		case ADD_EVENT:
-			return { ...state, eventsInfo: { ...state.eventsInfo, [action.event.id]: action.event } };
+			return { ...state, data: { ...state.data, [action.event.id]: action.event }, isLoading: false };
 
 		case REMOVE_EVENT: {
-			const newState = { ...state };
-			delete newState.eventsInfo[action.eventId];
-			return newState;
+			const newData = { ...state.data };
+			delete newData[action.eventId];
+			return { ...state, data: newData, isLoading: false }
 		}
-
 		default:
 			return state;
 	}

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileButton from "./ProfileButton";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
@@ -6,11 +6,11 @@ import LoginFormModal from "../LoginFormModal/LoginFormModal";
 import SignupFormModal from "../SignupFormModal/SignupFormModal";
 import "./Navigation.css";
 import logo from "../images/logo.png";
-import { useNavigate } from "react-router-dom";
 
 function Navigation({ isLoaded }) {
 	const sessionUser = useSelector((state) => state.session.user);
 	const navigate = useNavigate();
+
 	const callNavigate = () => {
 		return navigate(`/`);
 	};
@@ -18,26 +18,24 @@ function Navigation({ isLoaded }) {
 	let sessionLinks;
 	if (sessionUser) {
 		sessionLinks = (
-			<li className='navListItem' id='profileButton'>
-				<ProfileButton user={sessionUser} navigate={callNavigate} />
-			</li>
+			<>
+				<Link className='navNewGroup' to={"/groups/new"}>
+					Start a new group
+				</Link>
+
+				<li className='navListItem' id='profileButton'>
+					<ProfileButton user={sessionUser} navigate={callNavigate} />
+				</li>
+			</>
 		);
 	} else {
 		sessionLinks = (
 			<>
 				<li className='navListItem' id='signUp'>
-					<OpenModalButton
-						cssClass={'modalButton'}
-						buttonText='Sign Up'
-						modalComponent={<SignupFormModal />}
-					/>
+					<OpenModalButton cssClass={"modalButton"} buttonText='Sign Up' modalComponent={<SignupFormModal />} />
 				</li>
 				<li className='navListItem' id='signIn'>
-					<OpenModalButton
-						cssClass={'modalButton'}
-						buttonText='Log In'
-						modalComponent={<LoginFormModal />}
-					/>
+					<OpenModalButton cssClass={"modalButton"} buttonText='Log In' modalComponent={<LoginFormModal />} />
 				</li>
 			</>
 		);
@@ -46,14 +44,18 @@ function Navigation({ isLoaded }) {
 	return (
 		<nav>
 			<ul className='navList'>
-				<li className='navListItem'>
-					<NavLink to='/'>
-						<a>
-							<img className='logo' src={logo}></img>
-						</a>
-					</NavLink>
-				</li>
-				{isLoaded && sessionLinks}
+				<div className='navListContainer'>
+					<div>
+						<li className='navListItem'>
+							<NavLink to='/'>
+								<a>
+									<img className='logo' src={logo}></img>
+								</a>
+							</NavLink>
+						</li>
+					</div>
+					<div className='sessionLinks'>{isLoaded && sessionLinks}</div>
+				</div>
 			</ul>
 		</nav>
 	);

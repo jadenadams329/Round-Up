@@ -8,9 +8,9 @@ import moment from "moment";
 
 function EventsListPage() {
 	const dispatch = useDispatch();
-	const events = useSelector((state) => state.events.eventsInfo);
+	const [isLoaded, setIsLoaded] = useState(false)
+	const events = useSelector((state) => state.events.data);
 	const eventList = Object.values(events);
-	const [isLoaded, setIsLoaded] = useState(false);
 
 	const sortedEvents = eventList.sort((first, second) => {
 		const now = moment();
@@ -32,10 +32,12 @@ function EventsListPage() {
 		}
 	});
 
+
+
 	useEffect(() => {
 		dispatch(getAllEvents())
 			.then(() => {
-				setIsLoaded(true);
+				setIsLoaded(true)
 			})
 			.catch((error) => {
 				console.error("An error occurred: ", error);
@@ -57,7 +59,6 @@ function EventsListPage() {
 					</div>
 					<p className='glpMenuP'>Events in Roundup</p>
 					<div id='spinner'>{!isLoaded && <Spinner />}</div>
-
 					{isLoaded &&
 						sortedEvents &&
 						sortedEvents.map((event) => (

@@ -1,10 +1,21 @@
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import DeleteEventModal from "./DeleteEventModal";
 import { useSelector } from "react-redux";
+import Spinner from "../Spinner/Spinner";
 
 function EventDetailsInfo({ group, event, navigate }) {
 	const sessionUser = useSelector((state) => state.session.user);
+	const isLoaded = useSelector((state) => !state.session.isLoading)
 	let eventButtons;
+
+	if (!isLoaded) {
+		return (
+			<div id='spinner'>
+				<Spinner />
+			</div>
+		);
+	}
+
 	if (sessionUser && group && sessionUser.id === group.organizerId) {
 		eventButtons = (
 			<>
@@ -12,7 +23,7 @@ function EventDetailsInfo({ group, event, navigate }) {
 				<OpenModalButton
 					cssClass={"gdpButtons"}
 					buttonText='Delete'
-					modalComponent={<DeleteEventModal eventId={event.id} navigate={navigate} />}
+					modalComponent={<DeleteEventModal eventId={event.id} navigate={navigate} groupId={group.id} />}
 				/>
 			</>
 		);

@@ -1,10 +1,53 @@
 .profile-dropdown {
 	/* Styles for when the menu is visible */
+  right: 0;
+  position: absolute;
+  border: 1px grey solid;
+  border-radius: 5px;
+  padding: 15px;
+  list-style-type: none;
+  margin-top: 5px;
+  margin-right: 25px;
+  background-color: white;
+  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.4),
+              0px 1px 1px 0px rgba(0,0,0,0.28),
+              0px 1px 3px 0px rgba(0,0,0,0.24);
+}
+
+.profile-dropdown > li {
+  padding-bottom: 12px;
+}
+
+.userProfileLink {
+  text-decoration: none;
+  color: #00525E;
+}
+
+.userProfileLink:hover {
+  text-decoration: underline;
+  color: #00525E;
 }
 
 .profile-dropdown.hidden {
 	display: none;
 	/* Additional styles for when the menu is hidden */
+}
+
+.upButtonDiv{
+  border-top: 1px solid gray;
+  padding-top: 10px;
+}
+
+.upButtonDiv > button {
+  background-color: gray;
+  border: none;
+  color: white;
+  padding: 5px 15px;
+  cursor: pointer;
+}
+
+.upButtonDiv > button:hover {
+  background-color: #FF5A5F;
 }
 
 nav{
@@ -18,26 +61,43 @@ nav{
 	padding: 15px 20px 0 20px;
   margin: 0;
 }
-.navListItem {
-  display: inline-block;
+
+.navListContainer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-#signUp{
-  float: right;
-  padding-top: 7.3125px;
-}
-#signIn {
-  margin-right: 40px;
-  float: right;
-  padding-top: 7.3125px;
-}
-#profileButton {
-  float: right;
-  padding-top: 7.3125px;
+
+.sessionLinks{
+  display: flex;
+  gap: 50px;
+  align-items: center;
 }
 
 .logo{
   width: 150px;
 }
+
+.profileButtonContainer{
+  display: flex;
+  align-items: center;
+}
+
+.userProfileButton{
+  background-color: white;
+  border: none;
+}
+
+.userProfileButton > i {
+  font-size: 25px;
+  color: #FF5A5F;
+}
+
+.navNewGroup{
+  text-decoration: none;
+  color: #00525E;
+}
+
 
 .modalButton {
   background-color: white;

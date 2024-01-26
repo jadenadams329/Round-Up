@@ -1,16 +1,19 @@
 import { useModal } from "../../context/Modal";
 import { useDispatch } from "react-redux";
 import { deleteEvent } from "../../store/events";
+import { getGroupEvents } from "../../store/groupEvents";
 
-function DeleteEventModal({eventId, navigate}) {
+function DeleteEventModal({eventId, navigate, groupId}) {
     const { closeModal } = useModal();
 	const dispatch = useDispatch();
-    console.log(eventId)
-
     const handleDelete = async (e) => {
 		e.preventDefault();
 		try {
-			dispatch(deleteEvent(eventId));
+			dispatch(deleteEvent(eventId))
+				.then(() => {
+					dispatch(getGroupEvents(groupId))
+				})
+
 			closeModal();
             navigate();
 		} catch (err) {

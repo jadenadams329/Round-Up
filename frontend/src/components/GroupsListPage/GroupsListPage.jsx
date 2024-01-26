@@ -9,15 +9,14 @@ import Spinner from "../Spinner/Spinner";
 function GroupsListPage() {
 	const [isLoaded, setIsLoaded] = useState(false);
 	const dispatch = useDispatch();
-	const groups = useSelector((state) => state.groups.groupInfo);
+	const groups = useSelector((state) => state.groups.data);
 	const groupsList = Object.values(groups);
 
 	useEffect(() => {
-		dispatch(getAllGroups())
-		.then(() => {
-			setIsLoaded(true);
+		dispatch(getAllGroups()).then(() => {
+			setIsLoaded(true)
 		})
-		
+
 	}, [dispatch]);
 
 	return (

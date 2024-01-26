@@ -1,24 +1,31 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+
 import * as sessionActions from "../../store/session";
 
 function ProfileButton({ user, navigate }) {
 	const dispatch = useDispatch();
 	const [showMenu, setShowMenu] = useState(false);
+	const [iconClass, setIconClass] = useState(false);
 	const ulRef = useRef();
 
 	const toggleMenu = (e) => {
 		e.stopPropagation(); // Keep click from bubbling up to document and triggering closeMenu
 		// if (!showMenu) setShowMenu(true);
 		setShowMenu(!showMenu);
+		setIconClass(!showMenu);
 	};
 
 	useEffect(() => {
-		if (!showMenu) return;
+		if (!showMenu) {
+			return;
+		}
 
 		const closeMenu = (e) => {
 			if (ulRef.current && !ulRef.current.contains(e.target)) {
 				setShowMenu(false);
+				setIconClass(false);
 			}
 		};
 
@@ -31,26 +38,36 @@ function ProfileButton({ user, navigate }) {
 		e.preventDefault();
 		dispatch(sessionActions.logout()).then(() => {
 			navigate();
-		})
-
+		});
 	};
 
 	const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
 	return (
 		<>
-			<button onClick={toggleMenu}>
-				<i className='fas fa-user-circle' />
-			</button>
+			<div className='profileButtonContainer'>
+				<button className='userProfileButton' onClick={toggleMenu}>
+					<i className='fas fa-user-circle' />
+				</button>
+				<i className={iconClass ? "fa-solid fa-angle-down" : "fa-solid fa-angle-up"}></i>
+			</div>
 			<ul className={ulClassName} ref={ulRef}>
-				<li>{user.username}</li>
-				<li>
-					{user.firstName} {user.lastName}
-				</li>
+				<li>{`Hello, ${user.username}`}</li>
+
 				<li>{user.email}</li>
 				<li>
-					<button onClick={logout}>Log Out</button>
+					<Link className='userProfileLink' onClick={toggleMenu} to={"/groups"}>
+						View groups
+					</Link>
 				</li>
+				<li>
+					<Link className='userProfileLink' onClick={toggleMenu} to={"/events"}>
+						View events
+					</Link>
+				</li>
+				<div className='upButtonDiv'>
+					<button onClick={logout}>Log Out</button>
+				</div>
 			</ul>
 		</>
 	);

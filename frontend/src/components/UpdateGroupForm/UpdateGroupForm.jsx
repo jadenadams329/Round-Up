@@ -7,7 +7,7 @@ import { addImage } from "../../store/groupImages";
 
 function UpdateGroupForm() {
 	const { id } = useParams();
-	const group = useSelector((state) => state.groups.groupInfo[id]);
+	const group = useSelector((state) => state.groups.data[id]);
 	let previewImg = group?.GroupImages?.find((img) => img.preview);
 
 	const handleIncomingLocation = (city, state) => {
@@ -31,8 +31,6 @@ function UpdateGroupForm() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	let hasErrors = Object.values(errors).length === 0 ? false : true;
-
-
 
 
 	useEffect(() => {
