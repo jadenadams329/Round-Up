@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getEvent } from "../../store/events";
+import { getEventDetails } from "../../store/eventDetails";
 import "./GroupEventCard.css";
 
 function GroupEventCard({ event }) {
@@ -10,10 +10,10 @@ function GroupEventCard({ event }) {
 	dateTime.splice(1, 0, "·");
 	dateTime = dateTime.join(" ");
 
-	const eventDetails = useSelector((state) => state.events.eventDetails[id]);
+	const eventDetails = useSelector((state) => state.eventDetails.data[id]);
 
 	useEffect(() => {
-		dispatch(getEvent(id));
+		dispatch(getEventDetails(id));
 	}, [dispatch, id]);
 	return (
 		<>

@@ -63,14 +63,15 @@ export const logout = () => async (dispatch) => {
 
 const initialState = {
 	user: null,
+	isLoading: true
 };
 /** Reducer: */
 const sessionReducer = (state = initialState, action) => {
 	switch (action.type) {
 		case SET_USER:
-			return { ...state, user: action.payload };
+			return { ...state, user: action.payload, isLoading: false };
 		case REMOVE_USER:
-			return { ...state, user: null };
+			return { ...state, user: null, isLoading: false };
 		default:
 			return state;
 	}

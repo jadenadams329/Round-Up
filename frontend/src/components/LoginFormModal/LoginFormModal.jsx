@@ -39,6 +39,18 @@ function LoginFormModal() {
 			});
 	};
 
+	const demoUserOnClick = (e) => {
+		e.preventDefault();
+		return dispatch(sessionActions.login({ credential: "member", password: "password" }))
+			.then(closeModal)
+			.catch(async (res) => {
+				const data = await res.json();
+				if (data) {
+					setErrors(data);
+				}
+			});
+	}
+
 	return (
 		<>
 			<h1>Log In</h1>
@@ -70,6 +82,7 @@ function LoginFormModal() {
 					>
 						Log In
 					</button>
+					<button className="demo" onClick={demoUserOnClick}>Log in as Demo User</button>
 				</div>
 			</form>
 		</>

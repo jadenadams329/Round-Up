@@ -5,11 +5,15 @@ import groupsReducer from "./groups";
 import eventsReducer from "./events";
 import groupImagesReducer from "./groupImages";
 import eventImagesReducer from "./eventImages";
+import groupEventsReducer from "./groupEvents";
+import eventDetailsReducer from "./eventDetails";
 
 const rootReducer = combineReducers({
 	session: sessionReducer,
 	groups: groupsReducer,
+	groupEvents: groupEventsReducer,
 	events: eventsReducer,
+	eventDetails: eventDetailsReducer,
 	groupImages: groupImagesReducer,
 	eventImages: eventImagesReducer
 

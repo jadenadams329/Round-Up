@@ -19,11 +19,11 @@ function CreateEventForm() {
 	const [description, setDescription] = useState("");
 	const [errors, setErrors] = useState({});
 	const [hasSubmitted, setHasSubmitted] = useState(false);
-	const [isLoaded, setIsLoaded] = useState(false);
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const group = useSelector((state) => state.groups.groupInfo[id]);
+	const group = useSelector((state) => state.groups.data[id]);
+	const isLoaded = useSelector((state) => !state.groups.isLoading);
 
 	let hasErrors = Object.values(errors).length === 0 ? false : true;
 
@@ -37,8 +37,15 @@ function CreateEventForm() {
 			const createImage = { url: imgUrl, preview: true };
 			try {
 				const event = await dispatch(addEvent(id, createEvent));
-				await dispatch(addImage(event.id, createImage));
-				navigate(`/events/${event.id}`);
+				if (event && event.id) {
+					console.log(event)
+					dispatch(addImage(event.id, createImage))
+					.then(() => {
+						navigate(`/events/${event.id}`);
+					});
+				} else {
+					console.log("Event creation failed");
+				}
 			} catch (err) {
 				console.log(err);
 			}
@@ -58,9 +65,7 @@ function CreateEventForm() {
 	};
 
 	useEffect(() => {
-		dispatch(getGroup(id)).then(() => {
-			setIsLoaded(true);
-		});
+		dispatch(getGroup(id));
 	}, [dispatch, id]);
 
 	useEffect(() => {

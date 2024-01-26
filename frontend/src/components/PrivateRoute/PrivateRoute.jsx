@@ -9,7 +9,7 @@ const PrivateRoute = ({ children }) => {
 	const { id } = useParams();
     const dispatch = useDispatch();
 	const user = useSelector((state) => state.session.user);
-	const group = useSelector((state) => state.groups.groupInfo[id]);
+	const group = useSelector((state) => state.groups.data[id]);
 	const isLoading = useSelector((state) => state.groups.isLoading);
 
 	const checkIfUserIsLoggedIn = (user) => {
@@ -32,7 +32,7 @@ const PrivateRoute = ({ children }) => {
 			<div id='spinner'>
 				<Spinner />
 			</div>
-		); 
+		);
 	}
 
 	return isLoggedIn && isGroupOwner ? children : <Navigate to='/' />;

@@ -2,7 +2,8 @@ import "./GroupDetailsPage.css";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getGroup, getGroupEvents } from "../../store/groups";
+import { getGroup } from "../../store/groups";
+import { getGroupEvents } from "../../store/groupEvents";
 import GroupEventCard from "./GroupEventCard";
 import moment from "moment";
 import DeleteGroupModal from "../DeleteGroupModal/DeleteGroupModal";
@@ -13,18 +14,20 @@ import JoinGroupModal from "./JoinGroupModal";
 function GroupDetailsPage() {
 	const noImgUrl = "https://t4.ftcdn.net/jpg/05/17/53/57/240_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg";
 	let imgFound = false;
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const group = useSelector((state) => state.groups.groupInfo[id]);
-	const events = useSelector((state) => state.groups.groupEvents);
+	const group = useSelector((state) => state.groups.data[id]);
+	const events = useSelector((state) => state.groupEvents.data);
 	const sessionUser = useSelector((state) => state.session.user);
 	const eventList = Object.values(events);
 	const Today = moment();
 	const sortedEvents = eventList.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 	const upcomingEvents = sortedEvents.filter((event) => moment(event.startDate).isSameOrAfter(Today));
 	const pastEvents = sortedEvents.filter((event) => moment(event.endDate).isBefore(Today));
-	const [isLoaded, setIsLoaded] = useState(false);
+	const [isLoaded, setIsLoaded] = useState(false)
+
 	let groupButtons;
 
 	const callNavigate = () => {
@@ -66,10 +69,13 @@ function GroupDetailsPage() {
 	}
 
 	useEffect(() => {
-		dispatch(getGroup(id));
+		dispatch(getGroup(id))
 		dispatch(getGroupEvents(id)).then(() => {
-			setIsLoaded(true);
-		});
+			setIsLoaded(true)
+		})
+
+
+
 	}, [dispatch, id]);
 
 	if (!isLoaded) {
