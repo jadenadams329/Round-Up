@@ -76,6 +76,8 @@ nav{
 
 .logo{
   width: 150px;
+  height: 35px;
+  object-fit: cover;
 }
 
 .profileButtonContainer{
