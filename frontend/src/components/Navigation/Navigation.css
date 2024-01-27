@@ -21,6 +21,7 @@
 .userProfileLink {
   text-decoration: none;
   color: #00525E;
+
 }
 
 .userProfileLink:hover {
@@ -88,6 +89,7 @@ nav{
 .userProfileButton{
   background-color: white;
   border: none;
+  cursor: pointer;
 }
 
 .userProfileButton > i {

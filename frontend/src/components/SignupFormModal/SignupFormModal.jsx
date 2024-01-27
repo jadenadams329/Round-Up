@@ -66,8 +66,6 @@ function SignupFormModal() {
 		});
 	};
 
-	console.log(userInteraction);
-
 	return (
 		<>
 			<h1>Sign Up</h1>

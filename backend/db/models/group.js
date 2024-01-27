@@ -86,8 +86,6 @@ module.exports = (sequelize, DataTypes) => {
 			joined.forEach((group) => {
 				allGroups.push(group);
 			});
-
-			console.log(allGroups);
 			const groups = Group.organizeGroupDetails(allGroups);
 
 			return groups;

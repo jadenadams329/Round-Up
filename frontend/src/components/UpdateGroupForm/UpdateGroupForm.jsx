@@ -50,7 +50,6 @@ function UpdateGroupForm() {
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		const isPrivate = privacy === "Private";
-		console.log(hasErrors)
 		if (!hasErrors) {
 			const [city, state] = handleLocation(location);
 			const createGroup = { name, about, type, private: isPrivate, city, state };

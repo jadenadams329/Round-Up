@@ -35,19 +35,16 @@ function CreateEventForm() {
 		if (!hasErrors) {
 			const createEvent = { name, type, capacity: capacityDefault, price, description, startDate, endDate };
 			const createImage = { url: imgUrl, preview: true };
-			try {
-				const event = await dispatch(addEvent(id, createEvent));
-				if (event && event.id) {
-					console.log(event)
-					dispatch(addImage(event.id, createImage))
-					.then(() => {
-						navigate(`/events/${event.id}`);
-					});
-				} else {
-					console.log("Event creation failed");
+			const event = await dispatch(addEvent(id, createEvent)).catch(async (res) => {
+				const data = await res.json();
+				if (data?.errors) {
+					setErrors(data.errors);
 				}
-			} catch (err) {
-				console.log(err);
+			});
+			if (event && event.id) {
+				dispatch(addImage(event.id, createImage)).then(() => {
+					navigate(`/events/${event.id}`);
+				});
 			}
 		}
 	};
@@ -74,8 +71,9 @@ function CreateEventForm() {
 		if (validator.isEmpty(type)) validationErrors["type"] = "Event Type is required";
 		if (validator.isEmpty(privacy)) validationErrors["privacy"] = "Visibility is required";
 		if (validator.isEmpty(price)) validationErrors["price"] = "Price is required";
-		if (validator.isEmpty(startDate)) validationErrors["startDate"] = "Event start is required";
-		if (validator.isEmpty(endDate)) validationErrors["endDate"] = "Event end is required";
+		if (price < 0) validationErrors["priceAmount"] = "Price can't be less than 0";
+		if (validator.isEmpty(startDate)) validationErrors["startDateOne"] = "Event start is required";
+		if (validator.isEmpty(endDate)) validationErrors["endDateOne"] = "Event end is required";
 		if (!(imgUrl.endsWith(".png") || imgUrl.endsWith(".jpg") || imgUrl.endsWith(".jpeg")))
 			validationErrors["imgUrl"] = "Image URL must end with .png, .jpg, or .jpeg";
 		if (description.length < 50) validationErrors["description"] = "Description must be at least 50 characters long";
@@ -136,6 +134,7 @@ function CreateEventForm() {
 									<label>What is the price for your event?</label>
 									<input onChange={(e) => setPrice(e.target.value)} value={price} type='number' placeholder='0'></input>
 									{errors.price && hasSubmitted && <p className='cgError'>{errors.price}</p>}
+									{errors.priceAmount && hasSubmitted && <p className='cgError'>{errors.priceAmount}</p>}
 								</div>
 							</div>
 							<div className='ceSectionContainer'>
@@ -148,7 +147,8 @@ function CreateEventForm() {
 											type='text'
 											placeholder='MM/DD/YYYY HH:mm AM'
 										></input>
-										{errors.startDate && hasSubmitted && <p className='cgError'>{errors.startDate}</p>}
+										{errors.startDateOne && hasSubmitted && <p className='cgError'>{errors.startDateOne}</p>}
+										{errors.startDate && <p className='cgError'>{errors.startDate}</p>}
 									</div>
 									<i className='fa-regular fa-calendar'></i>
 								</div>
@@ -161,7 +161,8 @@ function CreateEventForm() {
 											type='text'
 											placeholder='MM/DD/YYYY HH:mm PM'
 										></input>
-										{errors.endDate && hasSubmitted && <p className='cgError'>{errors.endDate}</p>}
+										{errors.endDateOne && hasSubmitted && <p className='cgError'>{errors.endDateOne}</p>}
+										{errors.endDate && <p className='cgError'>{errors.endDate}</p>}
 									</div>
 									<i className='fa-regular fa-calendar'></i>
 								</div>
@@ -191,12 +192,14 @@ function CreateEventForm() {
 									{errors.description && hasSubmitted && <p className='cgError'>{errors.description}</p>}
 								</div>
 							</div>
-							<div className="ceButton">
+							<div className='ceButton'>
 								<button>Create Event</button>
 							</div>
 						</form>
 						<div>
-							<button className="fillData" onClick={fillFormData}>Fill Form Data(Demo purposes)</button>
+							<button className='fillData' onClick={fillFormData}>
+								Fill Form Data(Demo purposes)
+							</button>
 						</div>
 					</div>
 					<div className='grid-item'></div>

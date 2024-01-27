@@ -154,7 +154,6 @@ const validateEvent = [
 		.withMessage("Start date must be in the future")
 		.custom((value) => {
 			let date = new Date(value)
-			console.log(date)
 			if (date <= new Date()) {
 				throw new Error("Start date must be in the future")
 			}
