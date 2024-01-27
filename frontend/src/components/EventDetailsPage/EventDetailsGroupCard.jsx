@@ -1,8 +1,5 @@
 
-
 function EventDetailsGroupCard({group}) {
-    console.log(group.GroupImages)
-
   return (
    <>
         <div className="edgcContainer">

@@ -1,27 +1,20 @@
 import { useModal } from "../../context/Modal";
 import { useDispatch } from "react-redux";
 import { deleteGroup } from "../../store/groups";
-import { useState } from "react";
 import "./DeleteGroupModal.css";
 
 function DeleteGroupModal({ groupId, navigate }) {
 	const { closeModal } = useModal();
 	const dispatch = useDispatch();
-	const [errors, setErrors] = useState({});
 
 	const handleDelete = async (e) => {
 		e.preventDefault();
-		setErrors({});
 		try {
 			dispatch(deleteGroup(groupId));
 			closeModal();
 			navigate();
-		} catch (res) {
-			const data = await res.json();
-			if (data) {
-				setErrors(data);
-			}
-			console.log(errors);
+		} catch (err) {
+			console.log(err)
 		}
 	};
 

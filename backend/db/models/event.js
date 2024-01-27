@@ -88,8 +88,6 @@ module.exports = (sequelize, DataTypes) => {
 				raw: true,
 			});
 
-			console.log(allEvents);
-
 			const events = Event.organizeEvents(allEvents);
 
 			return events;
